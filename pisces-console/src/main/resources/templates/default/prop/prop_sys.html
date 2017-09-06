@@ -1,0 +1,52 @@
+<div class="panel panel-default" ng-controller="propSysCtrl">
+    <div class="panel-body">
+        <form name="propForm" method="post" action="#" class="form-horizontal" ng-submit="save($event)">
+            <div class="form-group">
+                <label class="col-sm-1 control-label">控制台标题</label>
+                <div class="col-sm-2">
+                    <input name="console_title" class="form-control" ng-model="prop._p_console_title">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">控制台名称</label>
+                <div class="col-sm-2">
+                    <input name="console_name" class="form-control" ng-model="prop._p_console_name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">控制台版权</label>
+                <div class="col-sm-2">
+                    <input name="console_copyright" class="form-control" ng-model="prop._p_console_copyright">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">控制台地址</label>
+                <div class="col-sm-4">
+                    <input type="url" name="console_url" class="form-control" placeholder="http://" ng-model="prop._p_console_url">
+                </div>
+            </div>
+            <hr>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">开发模式</label>
+                <div class="col-sm-11 toggle-switch">
+                    <toggle-switch ng-model="prop._p_sys_is_dev" true="01" false="00"></toggle-switch>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">分页大小</label>
+                <div class="col-sm-1">
+                    <input type="number" name="sys_page_size" class="form-control" ng-model="prop._p_sys_page_size">
+                </div>
+            </div>
+            <div class="form-group margin-bottom-zero">
+                <div class="col-sm-offset-1 col-sm-11">
+                    <button class="btn btn-success" ng-disabled="ctrl.status('saveBtn', ['processing'])">
+                        <span ng-show="ctrl.status('saveBtn', ['standby'])"><fa i="floppy-o">&nbsp;${app.msg('common.op.save')}</fa></span>
+                        <span ng-show="ctrl.status('saveBtn', ['processing'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- #include('js_prop_sys.html') -->

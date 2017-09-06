@@ -1,0 +1,7 @@
+<div ng-controller="propCtrl">
+    <ul class="nav nav-tabs">
+        <li ng-repeat="tab in tabs" ng-class="{active: tab === current.tab}"><a href="#" ng-bind-html="tab.name" ng-click="active(tab)"></a></li>
+    </ul>
+    <div class="panel-tab ng-fade" ng-include="current.url"></div>
+</div>
+<!-- #include('js_index.html') -->

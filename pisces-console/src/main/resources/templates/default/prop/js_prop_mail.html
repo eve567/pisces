@@ -1,0 +1,17 @@
+<!--suppress JSUnusedLocalSymbols, JSUnresolvedVariable -->
+<script type="text/javascript">
+    'use strict';
+    function propMailCtrl($scope) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.prop["_p_mail.smtp.host"] = '${App::config("mail.smtp.host")}';
+                $scope.prop["_p_mail.smtp.port"] = parseInt('${App::config("mail.smtp.port")}');
+                $scope.prop["_p_mail.smtp.username"] = '${App::config("mail.smtp.username")}';
+                $scope.prop["_p_mail.smtp.password"] = '${App::config("mail.smtp.password")}';
+                $scope.prop["_p_mail.from"] = '${App::config("mail.from")}';
+                $scope.prop["_p_mail.from.name"] = '${App::config("mail.from.name")}';
+            }
+        }).init();
+    }
+</script>

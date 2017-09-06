@@ -1,0 +1,16 @@
+<script type="text/javascript">
+    'use strict';
+    function propSysCtrl($scope) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.prop._p_console_title = '${App::config("console_title")}';
+                $scope.prop._p_console_name = '${App::config("console_name")}';
+                $scope.prop._p_console_copyright = '${App::config("console_copyright")}';
+                $scope.prop._p_console_url = '${App::config("console_url")}';
+                $scope.prop._p_sys_is_dev = '${App::config("sys_is_dev")}';
+                $scope.prop._p_sys_page_size = parseInt('${App::config("sys_page_size")}');
+            }
+        }).init();
+    }
+</script>

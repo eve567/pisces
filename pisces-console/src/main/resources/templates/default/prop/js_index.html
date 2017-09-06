@@ -1,0 +1,46 @@
+<!--suppress JSValidateTypes, JSUnresolvedVariable, JSUnusedLocalSymbols, JSUnresolvedFunction -->
+<script type="text/javascript">
+    'use strict';
+    function propCtrl($scope) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.active($scope.tabs[0]);
+            },
+
+            // 激活
+            active: function(tab) {
+                $scope.prop = {};
+                $scope.current.tab = tab;
+                $scope.current.url = '${app}/prop/_' + tab.code + '?' + $scope.date.timestamp();
+                $scope.ctrl.status('saveBtn', 'standby');
+            },
+
+            // 保存
+            save: function($event) {
+                $scope.ctrl.stop($event);
+                $scope.ctrl.status('saveBtn', 'processing');
+                $scope.postUrlencoded('${app}/prop/save', $scope.prop, function(data) {
+                    console.log(data);
+                }, function() {
+                    $scope.ctrl.status('saveBtn', 'standby');
+                });
+            },
+
+            //
+            tabs: [
+                {
+                    name: '<i class="fa fa-cog"></i>&nbsp;系统配置',
+                    code: 'sys'
+                },
+                {
+                    name: '<i class="fa fa-envelope"></i>&nbsp;邮件配置',
+                    code: 'mail'
+                }
+            ],
+
+            //
+            current: {}
+        }).init();
+    }
+</script>

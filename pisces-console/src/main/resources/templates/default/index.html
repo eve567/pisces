@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" ng-app="piscesApp" ng-controller="piscesCtrl">
+<head>
+    <meta charset="utf-8">
+    <title>${App::config('console_title')}</title>
+    <link rel="shortcut icon" href="${app.resourceCommon}/ufrog/img/favicon.png" type="image/png" />
+    <link rel="stylesheet" type="text/css" href="${app.resourceCommon}/bootstrap/3_3_7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="${app.resourceCommon}/bootstrap/3_3_7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="${app.resourceCommon}/font_awesome/4_7_0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="${app.resourceCommon}/ufrog/css/ufrog-bootstrap.min.css?ver=${app.version}">
+</head>
+<body ng-controller="indexCtrl">
+
+<alert ng-model="alert" sign-out-flag="_not_sign::" sign-view="${app}/sign_out"></alert>
+<layout brand="${App::config('console_name')}" host="${app.host}" app-id="${app.appId}" access-token="${app.user.token}" username="${app.user.name}"></layout>
+
+<script type="text/javascript" src="${app.resourceCommon}/jquery/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="${app.resourceCommon}/bootstrap/3_3_7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${app.resourceCommon}/angular/1_6_2/angular.min.js"></script>
+<script type="text/javascript" src="${app.resourceCommon}/angular/1_6_2/angular-sanitize.min.js"></script>
+<script type="text/javascript" src="${app.resourceCommon}/angular/1_6_2/angular-animate.min.js"></script>
+<script type="text/javascript" src="${app.resourceCommon}/ufrog/js/ufrog-angular-common.min.js?ver=${app.version}"></script>
+<script type="text/javascript" src="${app.resourceCommon}/ufrog/js/ufrog-angular-bootstrap.min.js?ver=${app.version}"></script>
+<script type="text/javascript" src="${app.resourceCommon}/ufrog/js/ufrog-angular-request.min.js?ver=${app.version}"></script>
+<script type="text/javascript" src="${app.resourceCommon}/leo/js/leo-api.min.js?ver=${app.version}"></script>
+<script type="text/javascript" src="${app.resourceHost}/js/pisces-console.min.js?ver=${app.version}"></script>
+<script type="text/javascript">
+    'use strict';
+    function indexCtrl($scope, $bootstrap) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $bootstrap.config('${app}', $scope);
+            },
+
+            alert: {}
+        }).init();
+    }
+</script>
+
+</body>
+</html>

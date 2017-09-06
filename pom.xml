@@ -36,7 +36,11 @@
     </distributionManagement>
     
     <modules>
-        
+        <module>pisces-domain</module>
+        <module>pisces-service</module>
+        <module>pisces-console</module>
+        <module>pisces-client</module>
+        <module>pisces-static</module>
     </modules>
     
     <properties>
