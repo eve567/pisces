@@ -1,0 +1,97 @@
+<script type="text/javascript">
+    'use strict';
+    function jobCtrl($scope) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.appFn.active($scope.$apps[0]);
+            },
+
+            // 任务功能集合
+            jobFn: {
+                // 查询数据
+                find: function() {
+                    $scope.ctrl.status('gridView', 'grid');
+                    $scope.ctrl.status('grid', 'loading');
+                    $scope.get('${app}/job/find_all/' + $scope.current.papp.id, function(data) {
+                        $scope.jobs = data;
+                    }, function() {
+                        $scope.ctrl.status('grid', 'loaded');
+                    });
+                },
+
+                // 任务表单
+                form: function(job) {
+                    $scope.ctrl.status('view', 'form');
+                },
+
+                // 取消
+                cancel: function() {
+                    $scope.ctrl.status('view', 'grid');
+                }
+            },
+
+            // 应用功能集合
+            appFn: {
+                // 激活
+                active: function(app) {
+                    $scope.current.app = app;
+                    $scope.jobFn.cancel();
+                    $scope.get('${app}/job/check_app/' + $scope.current.app.id, function(data) {
+                        $scope.current.papp = data;
+                        $scope.jobFn.find();
+                    }, null, null, function() {
+                        $scope.appFn.form();
+                    });
+                },
+
+                // 应用表单
+                form: function(app) {
+                    $scope.app = angular.extend({
+                        name: $scope.current.app.name,
+                        leoAppId: $scope.current.app.id
+                    }, app);
+
+                    $scope.object.delete($scope.app, ['creator', 'createTime', 'updater', 'updateTime']);
+                    $scope.ctrl.status('gridView', 'appForm');
+                    $scope.ctrl.status('appSaveBtn', 'standby');
+                },
+
+                // 保存应用
+                save: function($event) {
+                    $scope.ctrl.stop($event);
+                    $scope.ctrl.status('appSaveBtn', 'processing');
+                    if ($scope.valid.empty($scope.app.id)) {
+                        $scope.appFn.create($scope.app);
+                    } else {
+                        $scope.appFn.update($scope.app);
+                    }
+                },
+
+                // 创建应用
+                create: function(app) {
+                    $scope.post('${app}/job/create_app', app, function() {
+                        $scope.appFn.active($scope.current.app);
+                    }, function() {
+                        $scope.ctrl.status('appSaveBtn', 'standby');
+                    });
+                },
+
+                // 更新应用
+                update: function(app) {
+
+                },
+
+                // 判断应用保存按钮是否有效
+                disabledSaveBtn: function() {
+                    if ($scope.appForm.$invalid) return true;
+                    else if ($scope.ctrl.status('appSaveBtn', ['processing'])) return true;
+                    return false;
+                }
+            },
+
+            //
+            current: {}
+        }).init();
+    }
+</script>

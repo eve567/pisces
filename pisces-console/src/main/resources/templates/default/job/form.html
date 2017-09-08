@@ -1,0 +1,7 @@
+<div ng-controller="jobFormCtrl">
+    <ul class="nav nav-tabs">
+        <li ng-repeat="tab in tabs" ng-class="{active: tab === current.tab}"><a href="#" ng-bind="tab.name" ng-click="tabFn.active(tab)"></a></li>
+    </ul>
+    <div class="ng-fade panel-tab" ng-include="tabUrl"></div>
+</div>
+<!-- #include('js_form.html') -->

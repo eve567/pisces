@@ -2,6 +2,7 @@ package net.ufrog.pisces.console.controllers;
 
 import net.ufrog.common.KeyValuePair;
 import net.ufrog.common.dict.Dicts;
+import net.ufrog.pisces.domain.models.Job;
 import net.ufrog.pisces.domain.models.JobCtrl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ public class IndexController {
         mKeyValuePair = new HashMap<>();
         mClass = new HashMap<>();
 
+        mClass.put("job_type", Job.Type.class);
         mClass.put("job_ctrl_type", JobCtrl.Type.class);
     }
 
@@ -41,6 +43,17 @@ public class IndexController {
     @GetMapping({"", "/", "/index"})
     public String index() {
         return "index";
+    }
+
+    /**
+     * 展示视图
+     *
+     * @param view 视图
+     * @return view for ${view.replace('@')}
+     */
+    @GetMapping("_view/{view}")
+    public String toView(@PathVariable("view") String view) {
+        return view.replaceAll("@", "/");
     }
 
     /**

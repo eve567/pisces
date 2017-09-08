@@ -9,6 +9,7 @@ pattern:
 path:
   resource:
     common: "//103.20.249.125/leo-static2/resources"
+    #common: "//localhost:7086/static/resources"
     host: "//localhost:8080/static/resources"
     theme: "//localhost:8080/static/resources/default"
 cache:

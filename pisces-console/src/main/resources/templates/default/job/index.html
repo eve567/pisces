@@ -1,3 +1,5 @@
 <div ng-controller="jobCtrl">
-
+    <div class="ng-fade" ng-show="ctrl.status('view', ['grid'])"><!-- #include('grid.html') --></div>
+    <div class="ng-fade" ng-show="ctrl.status('view', ['form'])"><!-- #include('form.html') --></div>
 </div>
+<!-- #include('js_index.html') -->

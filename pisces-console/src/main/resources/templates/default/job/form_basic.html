@@ -1,0 +1,77 @@
+<div class="panel panel-default" ng-controller="jobFormBasicCtrl">
+    <div class="panel-body">
+        <form name="jobBasicForm" method="post" action="#" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-1 control-label"><rq>名称</rq></label>
+                <div class="col-sm-2">
+                    <input name="name" class="form-control" placeholder="请填写任务名称" ng-model="job.name" required maxlength="20">
+                    <alert-pop field="jobBasicForm.name">
+                        <alert-pop-item type="required">任务名称不能为空</alert-pop-item>
+                        <alert-pop-item type="maxlength">任务名称不能超过20个字符</alert-pop-item>
+                    </alert-pop>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label"><rq>代码</rq></label>
+                <div class="col-sm-2">
+                    <input name="code" class="form-control" placeholder="请填写任务代码" ng-model="job.code" required maxlength="50" pattern="^[_a-zA-Z]\w*$">
+                    <alert-pop field="jobBasicForm.code">
+                        <alert-pop-item type="required">任务代码不能为空</alert-pop-item>
+                        <alert-pop-item type="maxlength">任务代码不能超过50个字符</alert-pop-item>
+                        <alert-pop-item type="pattern">任务代码必须符合命名规范</alert-pop-item>
+                    </alert-pop>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">分组</label>
+                <div class="col-sm-2">
+                    <input name="group" class="form-control" placeholder="请填写任务分组" ng-model="job.group" maxlength="50">
+                    <alert-pop field="jobBasicForm.group">
+                        <alert-pop-item type="maxlength">任务分组不能超过50个字符</alert-pop-item>
+                    </alert-pop>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">日切</label>
+                <div class="col-sm-2">
+                    <input type="date" name="date" class="form-control" placeholder="请填写日切日期" ng-model="job.dateObj">
+                    <alert-pop field="jobBasicForm.date">
+                        <alert-pop-item type="date">任务日切必须为日期</alert-pop-item>
+                    </alert-pop>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label"><rq>类型</rq></label>
+                <div class="col-sm-1">
+                    <select class="form-control" ng-model="job.type" ng-options="type.key as type.value for type in jobTypes"></select>
+                </div>
+            </div>
+            <div class="form-group" ng-if="job.type === '00'">
+                <label class="col-sm-1 control-label"><rq><a href="http://sunnyzh66.iteye.com/blog/2294605" target="_blank"><fa i="info-circle"></fa></a>&nbsp;表达式</rq></label>
+                <div class="col-sm-3">
+                    <input name="cron" class="form-control" placeholder="0 0 1 * * ?" ng-model="job.cron" required>
+                    <alert-pop field="jobBasicForm.cron">
+                        <alert-pop-item type="required">CRON表达式必须填写</alert-pop-item>
+                    </alert-pop>
+                </div>
+            </div>
+            <div class="form-group" ng-if="job.type === '01'">
+                <label class="col-sm-1 control-label"><rq>间隔时间</rq></label>
+                <div class="col-sm-1">
+                    <input name="interval" class="form-control" placeholder="1min" ng-model="job.interval" required>
+                    <alert-pop field="jobBasicForm.interval">
+                        <alert-pop-item type="required">间隔时间必须填写</alert-pop-item>
+                    </alert-pop>
+                </div>
+            </div>
+            <div class="form-group margin-bottom-zero">
+                <div class="col-sm-offset-1 col-sm-11">
+                    <button class="btn btn-success">
+                        <span><fa i="floppy-o">&nbsp;${app.msg('common.op.save')}</fa></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- #include('js_form_basic.html') -->
