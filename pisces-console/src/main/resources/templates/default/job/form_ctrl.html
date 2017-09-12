@@ -1,0 +1,50 @@
+<div ng-controller="jobCtrlCtrl">
+    <div class="panel panel-default">
+        <table class="table table-striped table-hover">
+            <colgroup>
+                <col width="10%">
+                <col width="20%">
+                <col width="70%">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>类型</th>
+                <th>相关任务</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="jc in jobCtrls">
+                <td ng-bind="jc.typeName"></td>
+                <td ng-bind="jc.relatedName"></td>
+                <td class="link-group">
+                    <a href="#" class="link-group-item" ng-click="popDeleteConfirmModal(jc)">删除</a>
+                </td>
+            </tr>
+            <tr ng-if="ctrl.status('grid', ['loaded']) && valid.empty(jobCtrls)"><td class="text-warning" col-span><fa i="exclamation-triangle">&nbsp;${app.msg('common.empty')}</fa></td></tr>
+            <tr ng-if="ctrl.status('grid', ['loading'])"><td col-span><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></td></tr>
+            </tbody>
+        </table>
+        <div class="panel-body">
+            <form name="jobCtrlForm" method="post" action="#" class="form-horizontal" ng-submit="create($event)">
+                <div class="form-group margin-bottom-zero">
+                    <div class="col-sm-1">
+                        <select name="type" class="form-control" ng-model="jobCtrl.type" ng-options="type.key as type.value for type in jobCtrlTypes" required></select>
+                    </div>
+                    <div class="col-sm-2">
+                        <select name="relatedId" class="form-control" ng-model="jobCtrl.relatedId" ng-options="job.id as job.name for job in jobs" required></select>
+                    </div>
+                    <div class="col-sm-9">
+                        <button class="btn btn-success" ng-disabled="ctrl.status('saveBtn', ['processing'])">
+                            <span ng-show="ctrl.status('saveBtn', ['standby'])"><fa i="floppy-o">&nbsp;${app.msg('common.op.add')}</fa></span>
+                            <span ng-show="ctrl.status('saveBtn', ['processing'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></span>
+                        </button>
+                        <button type="button" class="btn btn-default" ng-click="jobFn.cancel()"><fa i="times-circle">&nbsp;${app.msg('common.op.cancel')}</fa></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- #include('modal_form_ctrl_delete.html') -->
+</div>
+<!-- #include('js_form_ctrl.html') -->

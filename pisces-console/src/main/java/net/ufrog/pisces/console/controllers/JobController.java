@@ -2,15 +2,20 @@ package net.ufrog.pisces.console.controllers;
 
 import net.ufrog.common.Result;
 import net.ufrog.common.utils.Objects;
+import net.ufrog.pisces.console.beans.JobCtrlWrapper;
 import net.ufrog.pisces.domain.models.App;
 import net.ufrog.pisces.domain.models.Job;
+import net.ufrog.pisces.domain.models.JobCtrl;
+import net.ufrog.pisces.domain.models.JobParam;
 import net.ufrog.pisces.service.AppService;
 import net.ufrog.pisces.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 任务控制器
@@ -60,6 +65,110 @@ public class JobController {
     @ResponseBody
     public List<Job> findAll(@PathVariable("appId") String appId) {
         return jobService.findByAppId(appId);
+    }
+
+    /**
+     * 查询参数
+     *
+     * @param jobId 任务编号
+     * @return 任务参数列表
+     */
+    @GetMapping("/find_params/{jobId}")
+    @ResponseBody
+    public List<JobParam> findParams(@PathVariable("jobId") String jobId) {
+        return jobService.findParams(jobId);
+    }
+
+    /**
+     * 查询控制
+     *
+     * @param jobId 任务编号
+     * @return 任务控制列表
+     */
+    @GetMapping("/find_ctrls/{jobId}")
+    @ResponseBody
+    public List<JobCtrlWrapper> findCtrls(@PathVariable("jobId") String jobId) {
+        return jobService.findCtrls(jobId).parallelStream().map(jc -> JobCtrlWrapper.newInstance(jc, jobService.findById(jc.getRelatedId()))).collect(Collectors.toList());
+    }
+
+    /**
+     * 创建任务
+     *
+     * @param job 任务对象
+     * @return 创建结果
+     */
+    @PostMapping("/create")
+    @ResponseBody
+    public Result<Job> create(@RequestBody Job job) {
+        Objects.trimStringFields(job);
+        return Result.success(jobService.create(job), net.ufrog.common.app.App.message("job.create.success", job.getName()));
+    }
+
+    /**
+     * 更新任务
+     *
+     * @param job
+     * @return
+     */
+    @PutMapping("/update")
+    @ResponseBody
+    public Result<Job> update(@RequestBody Job job) {
+        Objects.trimStringFields(job);
+        return Result.success(jobService.update(job), net.ufrog.common.app.App.message("job.update.success", job.getName()));
+    }
+
+    /**
+     * 创建任务参数
+     *
+     * @param jobParam 任务参数
+     * @return 创建结果
+     */
+    @PostMapping("/create_param")
+    @ResponseBody
+    public Result<JobParam> createParam(@RequestBody JobParam jobParam) {
+        Objects.trimStringFields(jobParam);
+        return Result.success(jobService.createParam(jobParam), net.ufrog.common.app.App.message("job.param.create.success", jobParam.getCode()));
+    }
+
+    /**
+     * 删除任务参数
+     *
+     * @param jobParamId 任务参数编号
+     * @return 删除结果
+     */
+    @DeleteMapping("/delete_param/{jobParamId}")
+    @ResponseBody
+    public Result<JobParam> deleteParam(@PathVariable("jobParamId") String jobParamId) {
+        JobParam jobParam = jobService.deleteParam(jobParamId);
+        return Result.success(jobParam, net.ufrog.common.app.App.message("job.param.delete.success", jobParam.getCode()));
+    }
+
+    /**
+     * 创建任务控制
+     *
+     * @param jobCtrl 任务控制
+     * @return 创建结果
+     */
+    @PostMapping("/create_ctrl")
+    @ResponseBody
+    public Result<JobCtrlWrapper> createCtrl(@RequestBody JobCtrl jobCtrl) {
+        Objects.trimStringFields(jobCtrl);
+        Job related = jobService.findById(jobCtrl.getRelatedId());
+        return Result.success(JobCtrlWrapper.newInstance(jobService.createCtrl(jobCtrl), related), net.ufrog.common.app.App.message("job.ctrl.create.success", jobCtrl.getTypeName(), related.getName()));
+    }
+
+    /**
+     * 删除任务控制
+     *
+     * @param jobCtrlId 任务控制编号
+     * @return 删除结果
+     */
+    @DeleteMapping("/delete_ctrl/{jobCtrlId}")
+    @ResponseBody
+    public Result<JobCtrl> deleteCtrl(@PathVariable("jobCtrlId") String jobCtrlId) {
+        JobCtrl jobCtrl = jobService.deleteCtrl(jobCtrlId);
+        Job related = jobService.findById(jobCtrl.getRelatedId());
+        return Result.success(jobCtrl, net.ufrog.common.app.App.message("job.ctrl.delete.success", jobCtrl.getTypeName(), related.getName()));
     }
 
     /**

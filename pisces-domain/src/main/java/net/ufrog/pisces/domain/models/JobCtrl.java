@@ -1,5 +1,7 @@
 package net.ufrog.pisces.domain.models;
 
+import net.ufrog.common.dict.Dicts;
+
 /**
  * 任务控制模型
  *
@@ -77,6 +79,15 @@ public class JobCtrl extends Model {
      */
     public void setJobId(java.lang.String jobId) {
         this.jobId = jobId;
+    }
+
+    /**
+     * 读取类型名称
+     *
+     * @return 类型名称
+     */
+    public String getTypeName() {
+        return Dicts.name(type, Type.class);
     }
 
     /**

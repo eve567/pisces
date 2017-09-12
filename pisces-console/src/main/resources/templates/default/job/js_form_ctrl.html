@@ -1,0 +1,63 @@
+<script type="text/javascript">
+    'use strict';
+    function jobCtrlCtrl($scope, $bootstrap) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.find();
+                $scope.reset();
+            },
+
+            // 查询
+            find: function() {
+                $scope.ctrl.status('grid', 'loading');
+                $scope.get('${app}/job/find_ctrls/' + $scope.current.job.id, function(data) {
+                    $scope.jobCtrls = data;
+                }, function() {
+                    $scope.ctrl.status('grid', 'loaded');
+                });
+            },
+
+            // 创建控制
+            create: function($event) {
+                $scope.ctrl.stop($event);
+                $scope.ctrl.status('saveBtn', 'processing');
+                $scope.post('${app}/job/create_ctrl', $scope.jobCtrl, function(data) {
+                    $scope.array.add($scope.jobCtrls, data.data);
+                    $scope.reset();
+                }, function() {
+                    $scope.ctrl.status('saveBtn', 'standby');
+                });
+            },
+
+            // 删除控制
+            deleteCtrl: function() {
+                $scope.ctrl.status('deleteBtn', 'processing');
+                $scope.delete('${app}/job/delete_ctrl/' + $scope.current.jobCtrl.id, function(data) {
+                    $bootstrap.modal.hide('deleteCtrlConfirmModal');
+                    $scope.array.remove($scope.jobCtrls, data.data);
+                }, function() {
+                    $scope.ctrl.status('deleteBtn', 'standby');
+                });
+            },
+
+            // 重置表单
+            reset: function() {
+                $scope.ctrl.resetForm($scope.jobCtrlForm);
+                $scope.ctrl.status('saveBtn', 'standby');
+                $scope.jobCtrl = {
+                    jobId: $scope.current.job.id,
+                    type: $scope.jobCtrlTypes[0].key,
+                    relatedId: $scope.jobs[0].id
+                };
+            },
+
+            // 弹出删除确认框
+            popDeleteConfirmModal: function(jobCtrl) {
+                $scope.current.jobCtrl = jobCtrl;
+                $scope.ctrl.status('deleteBtn', 'standby');
+                $bootstrap.modal.show('deleteCtrlConfirmModal');
+            }
+        }).init();
+    }
+</script>

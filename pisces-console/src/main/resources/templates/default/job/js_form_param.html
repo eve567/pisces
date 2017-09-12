@@ -1,0 +1,66 @@
+<script type="text/javascript">
+    'use strict';
+    function jobParamCtrl($scope, $bootstrap) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.find();
+                $scope.reset();
+            },
+
+            // 查询
+            find: function() {
+                $scope.ctrl.status('grid', 'loading');
+                $scope.get('${app}/job/find_params/' + $scope.current.job.id, function(data) {
+                    $scope.jobParams = data;
+                }, function() {
+                    $scope.ctrl.status('grid', 'loaded');
+                });
+            },
+
+            // 创建参数
+            create: function($event) {
+                $scope.ctrl.stop($event);
+                $scope.ctrl.status('saveBtn', 'processing');
+                $scope.post('${app}/job/create_param', $scope.jobParam, function(data) {
+                    $scope.array.add($scope.jobParams, data.data);
+                    $scope.reset();
+                }, function() {
+                    $scope.ctrl.status('saveBtn', 'standby');
+                });
+            },
+
+            // 删除参数
+            deleteParam: function() {
+                $scope.ctrl.status('deleteBtn', 'processing');
+                $scope.delete('${app}/job/delete_param/' + $scope.current.jobParam.id, function(data) {
+                    $bootstrap.modal.hide('deleteParamConfirmModal');
+                    $scope.array.remove($scope.jobParams, data.data);
+                }, function() {
+                    $scope.ctrl.status('deleteBtn', 'standby');
+                });
+            },
+
+            // 重置表单
+            reset: function() {
+                $scope.jobParam = {jobId: $scope.current.job.id};
+                $scope.ctrl.resetForm($scope.jobParamForm);
+                $scope.ctrl.status('saveBtn', 'standby');
+            },
+
+            // 弹出删除确认框
+            popDeleteConfirmModal: function(jobParam) {
+                $scope.current.jobParam = jobParam;
+                $scope.ctrl.status('deleteBtn', 'standby');
+                $bootstrap.modal.show('deleteParamConfirmModal');
+            },
+
+            // 判断保存按钮是否有效
+            disabledSaveBtn: function() {
+                if ($scope.jobParamForm.$invalid) return true;
+                else if ($scope.ctrl.status('saveBtn', ['processing'])) return true;
+                return false;
+            }
+        }).init();
+    }
+</script>

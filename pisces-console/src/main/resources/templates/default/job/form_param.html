@@ -1,0 +1,54 @@
+<div ng-controller="jobParamCtrl">
+    <div class="panel panel-default">
+        <table class="table table-striped table-hover">
+            <colgroup>
+                <col width="15%">
+                <col width="65%">
+                <col width="20%">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>代码</th>
+                <th>内容</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="jp in jobParams">
+                <td ng-bind="jp.code"></td>
+                <td ng-bind="jp.value"></td>
+                <td class="link-group">
+                    <a href="#" class="link-group-item" ng-click="popDeleteConfirmModal(jp)">删除</a>
+                </td>
+            </tr>
+            <tr ng-if="ctrl.status('grid', ['loaded']) && valid.empty(jobParams)"><td class="text-warning" col-span><fa i="exclamation-triangle">&nbsp;${app.msg('common.empty')}</fa></td></tr>
+            <tr ng-if="ctrl.status('grid', ['loading'])"><td col-span><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></td></tr>
+            </tbody>
+        </table>
+        <div class="panel-body">
+            <form name="jobParamForm" method="post" action="#" class="form-horizontal" ng-submit="create($event)">
+                <div class="form-group">
+                    <div class="col-sm-3">
+                        <input name="code" class="form-control" placeholder="请填写参数代码" ng-model="jobParam.code" required maxlength="50">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-6">
+                        <textarea rows="5" name="value" class="form-control" placeholder="请填写参数内容" ng-model="jobParam.value" required></textarea>
+                    </div>
+                </div>
+                <div class="form-group margin-bottom-zero">
+                    <div class="col-sm-12">
+                        <button class="btn btn-success" ng-disabled="disabledSaveBtn()">
+                            <span ng-show="ctrl.status('saveBtn', ['standby'])"><fa i="floppy-o">&nbsp;${app.msg('common.op.add')}</fa></span>
+                            <span ng-show="ctrl.status('saveBtn', ['processing'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></span>
+                        </button>
+                        <button type="button" class="btn btn-default" ng-click="jobFn.cancel()"><fa i="times-circle">&nbsp;${app.msg('common.op.cancel')}</fa></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- #include('modal_form_param_delete.html') -->
+</div>
+<!-- #include('js_form_param.html') -->

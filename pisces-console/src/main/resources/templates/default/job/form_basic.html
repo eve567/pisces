@@ -1,6 +1,6 @@
-<div class="panel panel-default" ng-controller="jobFormBasicCtrl">
+<div class="panel panel-default" ng-controller="jobBasicCtrl">
     <div class="panel-body">
-        <form name="jobBasicForm" method="post" action="#" class="form-horizontal">
+        <form name="jobBasicForm" method="post" action="#" class="form-horizontal" ng-submit="save($event)">
             <div class="form-group">
                 <label class="col-sm-1 control-label"><rq>名称</rq></label>
                 <div class="col-sm-2">
@@ -47,7 +47,12 @@
                 </div>
             </div>
             <div class="form-group" ng-if="job.type === '00'">
-                <label class="col-sm-1 control-label"><rq><a href="http://sunnyzh66.iteye.com/blog/2294605" target="_blank"><fa i="info-circle"></fa></a>&nbsp;表达式</rq></label>
+                <label class="col-sm-1 control-label">
+                    <rq>
+                        <a href="http://sunnyzh66.iteye.com/blog/2294605" target="_blank"><fa i="info-circle"></fa></a>
+                        <span>表达式</span>
+                    </rq>
+                </label>
                 <div class="col-sm-3">
                     <input name="cron" class="form-control" placeholder="0 0 1 * * ?" ng-model="job.cron" required>
                     <alert-pop field="jobBasicForm.cron">
@@ -56,7 +61,21 @@
                 </div>
             </div>
             <div class="form-group" ng-if="job.type === '01'">
-                <label class="col-sm-1 control-label"><rq>间隔时间</rq></label>
+                <label class="col-sm-1 control-label">
+                    <rq>
+                        <a href="#" popover popover-trigger="hover" popover-placement="left">
+                            <fa i="info-circle"></fa>
+                            <div class="popover-body">
+                                <ul style="margin: 0; padding: 0; list-style: none;">
+                                    <li><strong><i>min, mn</i></strong>&nbsp;-&nbsp;分钟</li>
+                                    <li><strong><i>h</i></strong>&nbsp;-&nbsp;小时</li>
+                                    <li><strong><i>d</i></strong>&nbsp;-&nbsp;天</li>
+                                </ul>
+                            </div>
+                        </a>
+                        <span>间隔时间</span>
+                    </rq>
+                </label>
                 <div class="col-sm-1">
                     <input name="interval" class="form-control" placeholder="1min" ng-model="job.interval" required>
                     <alert-pop field="jobBasicForm.interval">
@@ -64,11 +83,20 @@
                     </alert-pop>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">通知邮件</label>
+                <div class="col-sm-4">
+                    <textarea name="email" rows="3" class="form-control" placeholder="多个邮件地址请使用西文逗号分隔" ng-model="job.email"></textarea>
+                </div>
+            </div>
             <div class="form-group margin-bottom-zero">
                 <div class="col-sm-offset-1 col-sm-11">
-                    <button class="btn btn-success">
-                        <span><fa i="floppy-o">&nbsp;${app.msg('common.op.save')}</fa></span>
+                    <button class="btn btn-success" ng-disabled="disabledSaveBtn()">
+                        <span ng-show="ctrl.status('saveBtn', ['standby'])"><fa i="floppy-o">&nbsp;${app.msg('common.op.save')}</fa></span>
+                        <span ng-show="ctrl.status('saveBtn', ['processing'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></span>
                     </button>
+                    <button type="button" class="btn btn-primary" ng-click="jobFn.cancel()" ng-if="!valid.empty(current.job.id)"><fa i="cloud-upload">&nbsp;同步至服务端</fa></button>
+                    <button type="button" class="btn btn-default" ng-click="jobFn.cancel()"><fa i="times-circle">&nbsp;取消</fa></button>
                 </div>
             </div>
         </form>

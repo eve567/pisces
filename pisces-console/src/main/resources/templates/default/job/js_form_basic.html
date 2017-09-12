@@ -1,10 +1,68 @@
 <script type="text/javascript">
     'use strict';
-    function jobFormBasicCtrl($scope) {
+    function jobBasicCtrl($scope) {
         angular.extend($scope, {
             // 初始化
             init: function() {
+                $scope.job = angular.extend({}, $scope.defaultProperties, $scope.current.job);
+                $scope.job.dateObj = new Date($scope.job.date);
+                if ($scope.job.type === '00') {
+                    $scope.job.cron = $scope.job.expression;
+                } else if ($scope.job.type === '01') {
+                    $scope.job.interval = $scope.job.expression;
+                }
+                $scope.object.delete($scope.job, ['creator', 'createTime', 'updater', 'updateTime']);
+                $scope.ctrl.status('saveBtn', 'standby');
+            },
 
+            // 保存数据
+            save: function($event) {
+                $scope.ctrl.stop($event);
+                $scope.ctrl.status('saveBtn', 'processing');
+                $scope.job.date = $scope.date.format('yyyy-MM-dd', $scope.job.dateObj);
+                if ($scope.job.type === '00') {
+                    $scope.job.expression = $scope.job.cron;
+                } else if ($scope.job.type === '01') {
+                    $scope.job.expression = $scope.job.interval;
+                } if ($scope.valid.empty($scope.job.id)) {
+                    $scope.create($scope.job);
+                } else {
+                    $scope.update($scope.job);
+                }
+            },
+
+            // 创建任务
+            create: function(job) {
+                $scope.post('${app}/job/create', job, function(data) {
+                    angular.extend($scope.current.job, data.data);
+                    $scope.tabFn.setup(true);
+                    $scope.init();
+                }, function() {
+                    $scope.ctrl.status('saveBtn', 'standby');
+                });
+            },
+
+            // 更新任务
+            update: function(job) {
+                $scope.put('${app}/job/update', job, function(data) {
+                    angular.extend($scope.current.job, data.data);
+                }, function() {
+                    $scope.ctrl.status('saveBtn', 'standby');
+                });
+            },
+
+            // 判断保存按钮是否有效
+            disabledSaveBtn: function() {
+                if ($scope.jobBasicForm.$invalid) return true;
+                else if ($scope.ctrl.status('saveBtn', ['processing'])) return true;
+                return false;
+            },
+
+            // 默认属性
+            defaultProperties: {
+                type: '00',
+                status: '00',
+                appId: $scope.current.papp.id
             }
         }).init();
     }

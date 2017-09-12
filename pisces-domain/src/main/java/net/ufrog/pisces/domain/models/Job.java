@@ -1,5 +1,7 @@
 package net.ufrog.pisces.domain.models;
 
+import net.ufrog.common.dict.Dicts;
+
 /**
  * 任务模型
  *
@@ -231,6 +233,24 @@ public class Job extends Model {
      */
     public void setAppId(java.lang.String appId) {
         this.appId = appId;
+    }
+
+    /**
+     * 读取类型名称
+     *
+     * @return 类型名称
+     */
+    public String getTypeName() {
+        return Dicts.name(type, Type.class);
+    }
+
+    /**
+     * 读取状态名称
+     *
+     * @return 状态名称
+     */
+    public String getStatusName() {
+        return Dicts.name(status, Status.class);
     }
 
     /**

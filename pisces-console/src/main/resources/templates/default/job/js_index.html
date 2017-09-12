@@ -4,6 +4,8 @@
         angular.extend($scope, {
             // 初始化
             init: function() {
+                $scope.findJobTypes();
+                $scope.findJobCtrlTypes();
                 $scope.appFn.active($scope.$apps[0]);
             },
 
@@ -22,12 +24,15 @@
 
                 // 任务表单
                 form: function(job) {
+                    $scope.current.job = job || {};
+                    $scope.tabFn.setup();
                     $scope.ctrl.status('view', 'form');
                 },
 
                 // 取消
                 cancel: function() {
                     $scope.ctrl.status('view', 'grid');
+                    $scope.ctrl.status('gridView', 'grid');
                 }
             },
 
@@ -88,6 +93,44 @@
                     else if ($scope.ctrl.status('appSaveBtn', ['processing'])) return true;
                     return false;
                 }
+            },
+
+            // 标签功能集合
+            tabFn: {
+                // 设置
+                setup: function(isAdd) {
+                    if (!isAdd) {
+                        $scope.tabs = [];
+                        $scope.tabs.push({name: '基础', url: '${app}/_view/job@form_basic'});
+                    } if (!$scope.valid.empty($scope.current.job.id)) {
+                        $scope.tabs.push({name: '参数', url: '${app}/_view/job@form_param'});
+                        $scope.tabs.push({name: '控制', url: '${app}/_view/job@form_ctrl'});
+                    } if (!isAdd) {
+                        $scope.tabFn.active($scope.tabs[0]);
+                    }
+                },
+
+                // 激活
+                active: function(tab) {
+                    if ($scope.current.tab !== tab) {
+                        $scope.current.tab = tab;
+                        $scope.tabUrl = $scope.current.tab.url + '?' + $scope.date.timestamp();
+                    }
+                }
+            },
+
+            // 查询任务类型
+            findJobTypes: function() {
+                $scope.get('${app}/_dict/job_type', function(data) {
+                    $scope.jobTypes = data;
+                });
+            },
+
+            // 查询任务控制类型
+            findJobCtrlTypes: function() {
+                $scope.get('${app}/_dict/job_ctrl_type', function(data) {
+                    $scope.jobCtrlTypes = data;
+                });
             },
 
             //
