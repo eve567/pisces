@@ -1,17 +1,16 @@
 package net.ufrog.pisces.service.impls;
 
 import net.ufrog.common.utils.Objects;
-import net.ufrog.pisces.domain.models.Job;
-import net.ufrog.pisces.domain.models.JobCtrl;
-import net.ufrog.pisces.domain.models.JobParam;
-import net.ufrog.pisces.domain.repositories.JobCtrlRepository;
-import net.ufrog.pisces.domain.repositories.JobParamRepository;
-import net.ufrog.pisces.domain.repositories.JobRepository;
+import net.ufrog.common.utils.Strings;
+import net.ufrog.pisces.domain.Models;
+import net.ufrog.pisces.domain.models.*;
+import net.ufrog.pisces.domain.repositories.*;
 import net.ufrog.pisces.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +30,12 @@ public class JobServiceImpl implements JobService {
     /** 任务控制仓库 */
     private final JobCtrlRepository jobCtrlRepository;
 
+    /** 任务日志仓库 */
+    private final JobLogRepository jobLogRepository;
+
+    /** 任务日志明细仓库 */
+    private final JobLogDetailRepository jobLogDetailRepository;
+
     /** 任务参数仓库 */
     private final JobParamRepository jobParamRepository;
 
@@ -39,18 +44,32 @@ public class JobServiceImpl implements JobService {
      *
      * @param jobRepository 任务仓库
      * @param jobCtrlRepository 任务控制仓库
+     * @param jobLogRepository 任务日志仓库
+     * @param jobLogDetailRepository 任务日志明细仓库
      * @param jobParamRepository 任务参数仓库
      */
     @Autowired
-    public JobServiceImpl(JobRepository jobRepository, JobCtrlRepository jobCtrlRepository, JobParamRepository jobParamRepository) {
+    public JobServiceImpl(
+            JobRepository jobRepository,
+            JobCtrlRepository jobCtrlRepository,
+            JobLogRepository jobLogRepository,
+            JobLogDetailRepository jobLogDetailRepository,
+            JobParamRepository jobParamRepository) {
         this.jobRepository = jobRepository;
         this.jobCtrlRepository = jobCtrlRepository;
+        this.jobLogRepository = jobLogRepository;
+        this.jobLogDetailRepository = jobLogDetailRepository;
         this.jobParamRepository = jobParamRepository;
     }
 
     @Override
     public Job findById(String id) {
         return jobRepository.findOne(id);
+    }
+
+    @Override
+    public List<Job> findAll() {
+        return jobRepository.findAll();
     }
 
     @Override
@@ -69,9 +88,13 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
+    public JobLog findLogById(String jobLogId) {
+        return jobLogRepository.findOne(jobLogId);
+    }
+
+    @Override
     @Transactional
     public Job create(Job job) {
-        //TODO 同步服务端
         return jobRepository.save(job);
     }
 
@@ -109,5 +132,29 @@ public class JobServiceImpl implements JobService {
         JobCtrl jobCtrl = jobCtrlRepository.findOne(jobCtrlId);
         jobCtrlRepository.delete(jobCtrl);
         return jobCtrl;
+    }
+
+    @Override
+    @Transactional
+    public JobLog createLog(String jobId, String remark) {
+        JobLog jobLog = jobLogRepository.save(Models.newJobLog(jobId, remark));
+        createLogDetail(jobLog.getId(), remark, JobLogDetail.Type.TRIGGER);
+        return jobLog;
+    }
+
+    @Override
+    @Transactional
+    public JobLog updateLog(String jobLogId, String status, String email, String cellphone) {
+        JobLog jobLog = jobLogRepository.findOne(jobLogId);
+
+        jobLog.setStatus(status);
+        jobLog.setDatetimeEnd(Strings.in(status, JobLog.Status.SUCCESS, JobLog.Status.FAILURE, JobLog.Status.BLOCK) ? new Date() : null);
+        return jobLogRepository.save(jobLog);
+    }
+
+    @Override
+    @Transactional
+    public JobLogDetail createLogDetail(String jobLogId, String remark, String type) {
+        return jobLogDetailRepository.save(Models.newJobLogDetail(jobLogId, remark, type));
     }
 }

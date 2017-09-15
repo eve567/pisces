@@ -1,6 +1,6 @@
 <script type="text/javascript">
     'use strict';
-    function jobCtrl($scope) {
+    function jobCtrl($scope, $http) {
         angular.extend($scope, {
             // 初始化
             init: function() {
@@ -15,9 +15,14 @@
                 find: function() {
                     $scope.ctrl.status('gridView', 'grid');
                     $scope.ctrl.status('grid', 'loading');
-                    $scope.get('${app}/job/find_all/' + $scope.current.papp.id, function(data) {
-                        $scope.jobs = data;
-                    }, function() {
+                    $http({
+                        method: 'jsonp',
+                        url: '${App::config("server_url")}/api/find_all/' + $scope.current.papp.id + '?' + $scope.date.timestamp()
+                    }).then(function(data) {
+                        $scope.jobs = data.data;
+                        $scope.ctrl.status('grid', 'loaded');
+                    }, function(data) {
+                        console.error(data);
                         $scope.ctrl.status('grid', 'loaded');
                     });
                 },
@@ -27,6 +32,13 @@
                     $scope.current.job = job || {};
                     $scope.tabFn.setup();
                     $scope.ctrl.status('view', 'form');
+                },
+
+                // 切换任务状态
+                toggle: function(job) {
+                    $scope.put('${app}/job/toggle/' + job.id, function(data) {
+                        $scope.array.replace($scope.jobs, data.data);
+                    });
                 },
 
                 // 取消
@@ -84,7 +96,11 @@
 
                 // 更新应用
                 update: function(app) {
-
+                    $scope.put('${app}/job/update_app', app, function() {
+                        $scope.jobFn.cancel();
+                    }, function() {
+                        $scope.ctrl.status('appSaveBtn', 'standby');
+                    });
                 },
 
                 // 判断应用保存按钮是否有效

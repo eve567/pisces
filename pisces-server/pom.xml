@@ -9,7 +9,7 @@
         <artifactId>pisces-parent</artifactId>
         <version>2.0.0</version>
     </parent>
-    <artifactId>pisces-console</artifactId>
+    <artifactId>pisces-server</artifactId>
     <packaging>war</packaging>
 
     <dependencies>
@@ -55,6 +55,22 @@
             <artifactId>spymemcached</artifactId>
             <version>${version.memcached}</version>
         </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${version.quartz}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>${version.mail}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
@@ -71,6 +87,6 @@
     </dependencies>
 
     <build>
-        <finalName>pisces-console</finalName>
+        <finalName>pisces-server</finalName>
     </build>
 </project>

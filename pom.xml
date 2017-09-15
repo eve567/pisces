@@ -38,6 +38,7 @@
     <modules>
         <module>pisces-domain</module>
         <module>pisces-service</module>
+        <module>pisces-server</module>
         <module>pisces-console</module>
         <module>pisces-client</module>
         <module>pisces-static</module>
@@ -63,9 +64,11 @@
         <version.memcached>2.12.3</version.memcached>
         <version.jodd>3.8.6</version.jodd>
         <version.mail>1.4.7</version.mail>
+        <version.quartz>2.3.0</version.quartz>
         <version.commons.logging>1.2</version.commons.logging>
         <version.commons.fileupload>1.3.3</version.commons.fileupload>
-        
+
+        <version.mariadb>2.1.1</version.mariadb>
         <version.mysql>6.0.6</version.mysql>
         <version.tomcat>8.5.16</version.tomcat>
         <version.junit>4.12</version.junit>

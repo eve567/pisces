@@ -34,6 +34,7 @@
             // 创建任务
             create: function(job) {
                 $scope.post('${app}/job/create', job, function(data) {
+                    $scope.array.add($scope.jobs, data.data);
                     angular.extend($scope.current.job, data.data);
                     $scope.tabFn.setup(true);
                     $scope.init();

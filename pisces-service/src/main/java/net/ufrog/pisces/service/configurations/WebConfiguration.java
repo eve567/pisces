@@ -3,6 +3,7 @@ package net.ufrog.pisces.service.configurations;
 import net.ufrog.common.jetbrick.SpringJetxConfigurations;
 import net.ufrog.common.spring.SpringConfigurations;
 import net.ufrog.common.spring.fastjson.FastJsonpHttpMessageConverter;
+import net.ufrog.common.spring.interceptor.PropertiesInterceptor;
 import net.ufrog.common.spring.interceptor.TokenInterceptor;
 import net.ufrog.pisces.service.PropService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,12 @@ import java.util.List;
 public class WebConfiguration extends WebMvcConfigurerAdapter {
 
     private final FastJsonpHttpMessageConverter fastJsonpHttpMessageConverter;
-    private final PropService propService;
+    private final PropertiesInterceptor propertiesInterceptor;
 
     @Autowired
-    public WebConfiguration(FastJsonpHttpMessageConverter fastJsonpHttpMessageConverter, PropService propService) {
+    public WebConfiguration(FastJsonpHttpMessageConverter fastJsonpHttpMessageConverter, PropertiesInterceptor propertiesInterceptor) {
         this.fastJsonpHttpMessageConverter = fastJsonpHttpMessageConverter;
-        this.propService = propService;
+        this.propertiesInterceptor = propertiesInterceptor;
     }
 
     @Override
@@ -68,7 +69,7 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LocaleChangeInterceptor());
         registry.addInterceptor(new TokenInterceptor());
-        registry.addInterceptor(SpringConfigurations.propertiesInterceptor(new DBPropertiesManager(propService)));
+        registry.addInterceptor(propertiesInterceptor);
     }
 
     @Bean

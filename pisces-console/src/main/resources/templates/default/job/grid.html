@@ -22,18 +22,18 @@
             <col width="10%">
             <col width="10%">
             <col width="10%">
-            <col width="10%">
-            <col width="30%">
+            <col width="20%">
+            <col width="20%">
         </colgroup>
         <thead>
         <tr>
             <th>名称</th>
             <th>代码</th>
-            <th>分组</th>
             <th>日切</th>
             <th>类型</th>
             <th>表达式</th>
             <th>状态</th>
+            <th>下次执行时间</th>
             <th>&nbsp;</th>
         </tr>
         </thead>
@@ -41,18 +41,18 @@
         <tr ng-repeat="job in jobs|orderBy:'-status'|filter:jobFilter">
             <td ng-bind="job.name"></td>
             <td ng-bind="job.code"></td>
-            <td ng-bind="job.group|empty:'-'"></td>
             <td ng-bind="job.date|empty:'-'|date:'yyyy-MM-dd'"></td>
             <td ng-bind="job.typeName"></td>
             <td ng-bind="job.expression"></td>
             <td ng-class="{'text-danger': job.status === '00', 'text-success': job.status === '01'}" ng-bind="job.statusName"></td>
+            <td ng-bind="job.nextFireTime|empty:'-'|date:'yyyy-MM-dd HH:mm:ss'"></td>
             <td class="link-group">
                 <a href="#" class="link-group-item">立即执行</a>
                 <a href="#" class="link-group-item">日志</a>
-                <a href="#" class="link-group-item" ng-if="job.status === '00'">运行</a>
-                <a href="#" class="link-group-item" ng-if="job.status === '01'">暂停</a>
+                <a href="#" class="link-group-item" ng-click="jobFn.toggle(job)" ng-if="job.status === '00'">运行</a>
+                <a href="#" class="link-group-item" ng-click="jobFn.toggle(job)" ng-if="job.status === '01'">暂停</a>
                 <a href="#" class="link-group-item" ng-if="job.status === '00'" ng-click="jobFn.form(job)">编辑</a>
-                <a href="#" class="link-group-item" ng-if="job.status === '00'">移除</a>
+                <!-- a href="#" class="link-group-item" ng-if="job.status === '00'">移除</a -->
             </td>
         </tr>
         <tr ng-if="ctrl.status('grid', ['loaded']) && valid.empty(jobs|filter:jobFilter)"><td class="text-warning" col-span><fa i="exclamation-triangle">&nbsp;${app.msg('common.empty')}</fa></td></tr>

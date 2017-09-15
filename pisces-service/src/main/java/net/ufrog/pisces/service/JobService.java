@@ -1,9 +1,8 @@
 package net.ufrog.pisces.service;
 
-import net.ufrog.pisces.domain.models.Job;
-import net.ufrog.pisces.domain.models.JobCtrl;
-import net.ufrog.pisces.domain.models.JobParam;
+import net.ufrog.pisces.domain.models.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +21,13 @@ public interface JobService {
      * @return 任务对象
      */
     Job findById(String id);
+
+    /**
+     * 查询所有任务
+     *
+     * @return 任务列表
+     */
+    List<Job> findAll();
 
     /**
      * 通过应用编号查询任务
@@ -46,6 +52,14 @@ public interface JobService {
      * @return 任务参数列表
      */
     List<JobCtrl> findCtrls(String jobId);
+
+    /**
+     * 通过编号查询任务日志
+     *
+     * @param jobLogId 任务日志编号
+     * @return 任务日志对象
+     */
+    JobLog findLogById(String jobLogId);
 
     /**
      * 创建任务
@@ -94,4 +108,34 @@ public interface JobService {
      * @return 被删除任务控制
      */
     JobCtrl deleteCtrl(String jobCtrlId);
+
+    /**
+     * 创建任务日志
+     *
+     * @param jobId 任务编号
+     * @param remark 备注
+     * @return 任务日志对象
+     */
+    JobLog createLog(String jobId, String remark);
+
+    /**
+     * 更新任务日志
+     *
+     * @param jobLogId 任务日志编号
+     * @param status 状态
+     * @param email 通知邮件
+     * @param cellphone 通知手机
+     * @return 任务日志对象
+     */
+    JobLog updateLog(String jobLogId, String status, String email, String cellphone);
+
+    /**
+     * 创建任务日志明细
+     *
+     * @param jobLogId 任务日志编号
+     * @param remark 备注
+     * @param type 类型
+     * @return 任务日志明细对象
+     */
+    JobLogDetail createLogDetail(String jobLogId, String remark, String type);
 }

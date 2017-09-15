@@ -4,6 +4,8 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import net.ufrog.common.spring.SpringConfigurations;
 import net.ufrog.common.spring.fastjson.FastJsonpHttpMessageConverter;
+import net.ufrog.common.spring.interceptor.PropertiesInterceptor;
+import net.ufrog.pisces.service.PropService;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -44,5 +46,10 @@ public class ContextConfiguration {
         fastJsonpHttpMessageConverter.setFastJsonConfig(fastJsonConfig);
         fastJsonpHttpMessageConverter.setJsonp("callback");
         return fastJsonpHttpMessageConverter;
+    }
+
+    @Bean
+    public PropertiesInterceptor propertiesInterceptor(PropService propService) {
+        return SpringConfigurations.propertiesInterceptor(new DBPropertiesManager(propService));
     }
 }
