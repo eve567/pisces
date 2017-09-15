@@ -107,13 +107,13 @@ public class PiscesServlet extends HttpServlet {
                         piscesJobData.putArg("stackTrace", sWriter.toString());
                     } catch (IOException ex) {
                         Logger.error("job '%s' and seq '%s' unknown exception!!!", job, num);
-                        ServiceException sEx = new ServiceException(ex.getMessage(), ex);
+                        ServiceException sex = new ServiceException(ex.getMessage(), ex);
 
                         piscesJobData.setStatus(PiscesJobData.Status.FAILURE);
                         piscesJobData.setTemplate("exception");
                         piscesJobData.setNeedLayout(Boolean.TRUE);
-                        piscesJobData.putArg("stackTrace", sEx.getMessage());
-                        throw sEx;
+                        piscesJobData.putArg("stackTrace", sex.getMessage());
+                        throw sex;
                     }
                 }
                 rPjd.setData(piscesJobData);

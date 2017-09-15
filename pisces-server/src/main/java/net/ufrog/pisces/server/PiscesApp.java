@@ -194,6 +194,8 @@ public class PiscesApp extends SpringWebApp {
                 Logger.info("job '%s - %s - %s' total: %s", jobWrapper.getName(), jobWrapper.getCode(), jobWrapper.getAppId(), mJobStatus.get(jobWrapper.getId()).incr());
             }
         } else {
+            jobService.createLogDetail(jobLog.getId(), message("job.trigger.failure.response"), JobLog.Status.FAILURE);
+            jobService.updateLog(jobLog.getId(), JobLog.Status.FAILURE, null, null);    //TODO 发送失败邮件
             Logger.error("job '%s - %s - %s' trigger failure, %s.", jobWrapper.getName(), jobWrapper.getCode(), jobWrapper.getAppId(), bodyText);
         }
     }

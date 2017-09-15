@@ -95,7 +95,6 @@
                         <span ng-show="ctrl.status('saveBtn', ['standby'])"><fa i="floppy-o">&nbsp;${app.msg('common.op.save')}</fa></span>
                         <span ng-show="ctrl.status('saveBtn', ['processing'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></span>
                     </button>
-                    <button type="button" class="btn btn-primary" ng-click="jobFn.cancel()" ng-if="!valid.empty(current.job.id)"><fa i="cloud-upload">&nbsp;同步至服务端</fa></button>
                     <button type="button" class="btn btn-default" ng-click="jobFn.cancel()"><fa i="times-circle">&nbsp;取消</fa></button>
                 </div>
             </div>

@@ -2,6 +2,8 @@ package net.ufrog.pisces.service;
 
 import net.ufrog.pisces.domain.models.App;
 
+import java.util.List;
+
 /**
  * 应用业务接口
  *
@@ -26,6 +28,13 @@ public interface AppService {
      * @return 应用对象
      */
     App findByLeoAppId(String leoAppId);
+
+    /**
+     * 查询所有应用
+     *
+     * @return 应用列表
+     */
+    List<App> findAll();
 
     /**
      * 创建应用

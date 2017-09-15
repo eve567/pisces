@@ -34,6 +34,12 @@
                     $scope.ctrl.status('view', 'form');
                 },
 
+                // 显示日志
+                log: function(job) {
+                    $scope.current.job = job;
+                    $scope.ctrl.status('view', 'log');
+                },
+
                 // 切换任务状态
                 toggle: function(job) {
                     $scope.put('${app}/job/toggle/' + job.id, function(data) {
@@ -45,6 +51,14 @@
                 cancel: function() {
                     $scope.ctrl.status('view', 'grid');
                     $scope.ctrl.status('gridView', 'grid');
+                }
+            },
+
+            // 任务日志功能集合
+            jobLogFn: {
+                // 查询
+                find: function() {
+
                 }
             },
 

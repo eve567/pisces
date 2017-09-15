@@ -1,0 +1,53 @@
+app:
+  name: "pisces-job"
+  secret: "zbh7DN0sLZYI5d6L0NzCwklr0NtZExi3RJ6ERKrjIzYuGz6WZYjplu2J0tKqEA8T"
+  messages: "classpath:messages-domain, classpath:messages-service, classpath:messages"
+pattern:
+  uuid: "[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}"
+  cellphone: "1[3578][0-9]{9}"
+  email: "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[a-zA-Z0-9](?:[\\w-]*[\\w])?"
+path:
+  resource:
+    common: "//103.20.249.125/leo-static2/resources"
+    #common: "//localhost:7086/static/resources"
+    host: "//localhost:8080/static/resources"
+    theme: "//localhost:8080/static/resources/default"
+cache:
+  default:
+    duration: "4h"
+    prefix: "pis_"
+datasource:
+  primary:
+    url: "jdbc:mariadb://103.20.249.125:13306/ufrog_pisces_dev?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false&serverTimezone=UTC"
+    username: "root"
+    password: "h+zZTdYokCV91r57jVO8rKmEgCyCNBCKRZqPf4gNg3c="
+    jpa:
+      showSql: true
+thread:
+  default:
+    type: "single"
+jetx:
+  config:
+    jetx.import.classes: "net.ufrog.common.app.App, net.ufrog.pisces.domain.models.*, net.ufrog.pisces.service.beans.**"
+    jetx.trim.directive.comments: "true"
+    jetx.template.loaders: "$loader"
+    $loader: "jetbrick.template.loader.ClasspathResourceLoader"
+    $loader.reloadable: "true"
+log4j:
+  rootLogger: "INFO, CONSOLE"
+  appender:
+    CONSOLE: "org.apache.log4j.ConsoleAppender"
+    CONSOLE.layout: "org.apache.log4j.PatternLayout"
+    CONSOLE.layout.ConversionPattern: "%d{HH:mm:ss.SSS} %-5p ~ %m%n"
+    #FILE: "org.apache.log4j.DailyRollingFileAppender"
+    #FILE.File: "/Users/ultrafrog/logs/pisces-server.log"
+    #FILE.DatePattern: "'.'yyyy-MM-dd"
+    #FILE.layout: "org.apache.log4j.PatternLayout"
+    #FILE.layout.ConversionPattern: "[%d{HH:mm:ss.SSS}][%-5p]%l:%m%n"
+  logger:
+    app: "DEBUG"
+pisces:
+  host: "http://localhost:8080/server"
+  app:
+    id: "b8c5e1cc-5b72-471b-888e-9688d563f9bc"
+    secret: "nCtNPsAmz0SsrqsAhI9MOKqMyjJs2IDi4BhUA6cSYGjx4yh3TNV31ZElGwNs3Nzt"

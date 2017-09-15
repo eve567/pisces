@@ -1,6 +1,5 @@
 package net.ufrog.pisces.service.impls;
 
-import net.ufrog.common.cache.Caches;
 import net.ufrog.common.utils.Objects;
 import net.ufrog.common.utils.Strings;
 import net.ufrog.pisces.domain.models.App;
@@ -9,6 +8,8 @@ import net.ufrog.pisces.service.AppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 应用业务实现
@@ -20,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class AppServiceImpl implements AppService {
-
-    private static final String CACHE_APP   = "app_";
 
     /** 应用仓库 */
     private final AppRepository appRepository;
@@ -44,6 +43,11 @@ public class AppServiceImpl implements AppService {
     @Override
     public App findByLeoAppId(String leoAppId) {
         return appRepository.findByLeoAppId(leoAppId);
+    }
+
+    @Override
+    public List<App> findAll() {
+        return appRepository.findAll();
     }
 
     @Override

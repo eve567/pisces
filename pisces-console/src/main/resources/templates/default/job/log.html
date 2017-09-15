@@ -1,0 +1,26 @@
+<div class="panel panel-default">
+    <div class="panel-heading">任务「<span ng-bind="current.job.name"></span>」日志</div>
+    <table>
+        <colgroup>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+        </colgroup>
+        <thead>
+        <tr>
+            <th>开始时间</th>
+            <th>结束时间</th>
+            <th>状态</th>
+            <th>备注</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div class="table-footer clearfix">
+    <div class="pull-left">
+        <button class="btn btn-default" ng-click="jobFn.cancel()"><fa i="times-circle">&nbsp;返回</fa></button>
+    </div>
+</div>

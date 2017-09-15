@@ -1,9 +1,7 @@
 package net.ufrog.pisces.console.controllers;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import jodd.http.HttpRequest;
-import jodd.http.HttpResponse;
 import net.ufrog.common.Result;
 import net.ufrog.common.exception.ServiceException;
 import net.ufrog.common.utils.Objects;
@@ -144,10 +142,9 @@ public class JobController {
         } else {
             throw new ServiceException("job status '" + job.getStatus() + "' invalid.");
         }
-
         jobService.update(job);
-
-        return JSON.parseObject(HttpRequest.get(Props.getServerUrl() + "/api/update/" + jobId).send().bodyText(), Result.class);
+        Result<?> result = JSON.parseObject(HttpRequest.get(Props.getServerUrl() + "/api/update/" + jobId).send().bodyText(), Result.class);
+        return Result.success(result.getData(), net.ufrog.common.app.App.message("job.toggle.success", job.getName(), job.getStatusName()));
     }
 
     /**

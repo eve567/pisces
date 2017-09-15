@@ -40,6 +40,7 @@
         <module>pisces-service</module>
         <module>pisces-server</module>
         <module>pisces-console</module>
+        <module>pisces-job</module>
         <module>pisces-client</module>
         <module>pisces-static</module>
     </modules>
