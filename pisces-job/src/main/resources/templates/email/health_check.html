@@ -1,0 +1,28 @@
+<div class="default">
+    <div class="content">
+        <div>总计检查应用数量：${total}&nbsp;&nbsp;|&nbsp;&nbsp;发生异常数量：${total_error}</div>
+    </div>
+    <table class="table">
+        <colgroup>
+            <col width="20%">
+            <col width="20%">
+            <col width="60%">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>应用名称</th>
+            <th>访问地址</th>
+            <th>错误信息</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- #for(net.ufrog.pisces.job.jobs.HealthCheckJob.AppChecker ac: errors) -->
+        <tr #if(for.odd) class="odd" #end >
+            <td>${ac.app.name}</td>
+            <td>${ac.app.url}</td>
+            <td>${ac.message}</td>
+        </tr>
+        <!-- #end -->
+        </tbody>
+    </table>
+</div>

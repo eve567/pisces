@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width">
+    <style>
+        body { margin: 0; padding: 0; }
+        pre { border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px; padding:10px; background-color: #fafafa; }
+        .container { line-height: 1.42857143; margin: 20px; font-family: 'Microsoft YaHei','Helvetica Neue','Helvetica','Arial','sans-serif'; font-size: 12px; }
+        .success { border: 1px solid #d6e9c6; border-radius: 4px; margin-bottom: 20px; background-color: #dff0d8; color: #3c763d; }
+        .failure { border: 1px solid #ebccd1; border-radius: 4px; margin-bottom: 20px; background-color: #f2dede; color: #a94442; }
+        .warning { border: 1px solid #faebcc; border-radius: 4px; margin-bottom: 20px; background-color: #fcf8e3; color: #8a6d3b; }
+        .default { border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px; background-color: #fff; }
+        .content { padding: 10px; }
+
+        .text-center { text-align: center !important; }
+        .text-right { text-align: right !important; }
+
+        table.table { width: 100%; padding: 0; border-top: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; }
+        table.table thead tr th { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+        table.table tbody tr.odd { background-color: #f9f9f9; }
+        table.table tbody tr td { padding: 10px; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="#if(jobData.status == '10') success #elseif(jobData.status == '20') failure #else warning #end">
+        <div class="content">
+            <div>开始时间：${jobLog.datetimeBegin.format("yyyy-MM-dd HH:mm:ss")}&nbsp;&nbsp;|&nbsp;&nbsp;结束时间：${endTime.format("yyyy-MM-dd HH:mm:ss")}&nbsp;&nbsp;|&nbsp;&nbsp;运行结果：${jobData.statusName}</div>
+        </div>
+    </div>
+    ${bodyContent}
+</div>
+
+</body>
+</html>

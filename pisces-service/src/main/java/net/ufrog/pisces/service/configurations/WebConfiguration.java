@@ -1,5 +1,6 @@
 package net.ufrog.pisces.service.configurations;
 
+import net.ufrog.common.app.App;
 import net.ufrog.common.jetbrick.SpringJetxConfigurations;
 import net.ufrog.common.spring.SpringConfigurations;
 import net.ufrog.common.spring.fastjson.FastJsonpHttpMessageConverter;
@@ -60,7 +61,7 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
         String errorView = "result";
         String partViewSuffix = "";
         String notSignView = "sign";
-        String notSignUri = "/sign_out";
+        String notSignUri = App.config("leo.host") + "/sign_out";
         String notSignPrefix = "_not_sign::";
         exceptionResolvers.add(SpringConfigurations.exceptionResolver(errorView, partViewSuffix, null, notSignView, notSignUri, notSignPrefix));
     }

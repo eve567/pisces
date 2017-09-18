@@ -4,20 +4,22 @@ import com.alibaba.fastjson.JSON;
 import jodd.http.HttpRequest;
 import net.ufrog.common.Result;
 import net.ufrog.common.exception.ServiceException;
+import net.ufrog.common.utils.Calendars;
 import net.ufrog.common.utils.Objects;
 import net.ufrog.common.utils.Strings;
+import net.ufrog.pisces.console.PiscesAPIs;
 import net.ufrog.pisces.console.beans.JobCtrlWrapper;
-import net.ufrog.pisces.domain.models.App;
-import net.ufrog.pisces.domain.models.Job;
-import net.ufrog.pisces.domain.models.JobCtrl;
-import net.ufrog.pisces.domain.models.JobParam;
+import net.ufrog.pisces.domain.models.*;
 import net.ufrog.pisces.service.AppService;
 import net.ufrog.pisces.service.JobService;
 import net.ufrog.pisces.service.beans.Props;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,8 +69,8 @@ public class JobController {
      */
     @GetMapping("/find_all/{appId}")
     @ResponseBody
-    public List<Job> findAll(@PathVariable("appId") String appId) {
-        return jobService.findByAppId(appId);
+    public List<?> findAll(@PathVariable("appId") String appId) {
+        return PiscesAPIs.findAll(appId);
     }
 
     /**
@@ -96,6 +98,26 @@ public class JobController {
     }
 
     /**
+     * 查询日志
+     *
+     * @param jobId 任务编号
+     * @param beginDate 开始日期
+     * @param endDate 结束日期
+     * @param page 当前页码
+     * @param size 分页大小
+     * @return 任务日志分页信息
+     */
+    @GetMapping("/find_logs/{jobId}")
+    @ResponseBody
+    public Page<JobLog> findLogs(@PathVariable("jobId") String jobId, String beginDate, String endDate, Integer page, Integer size) {
+        try {
+            return jobService.findLogsByJobId(jobId, Calendars.parseDatetime(beginDate), Calendars.parseDatetime(endDate), page, size);
+        } catch (ParseException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    /**
      * 创建任务
      *
      * @param job 任务对象
@@ -106,8 +128,7 @@ public class JobController {
     public Result<?> create(@RequestBody Job job) {
         Objects.trimStringFields(job);
         jobService.create(job);
-        Result<?> result = JSON.parseObject(HttpRequest.get(Props.getServerUrl() + "/api/create/" + job.getId()).send().bodyText(), Result.class);
-        return Result.success(result.getData(), net.ufrog.common.app.App.message("job.create.success", job.getName()));
+        return Result.success(PiscesAPIs.create(job.getId()).getData(), net.ufrog.common.app.App.message("job.create.success", job.getName()));
     }
 
     /**
@@ -121,8 +142,7 @@ public class JobController {
     public Result<?> update(@RequestBody Job job) {
         Objects.trimStringFields(job);
         jobService.update(job);
-        Result<?> result = JSON.parseObject(HttpRequest.get(Props.getServerUrl() + "/api/update/" + job.getId()).send().bodyText(), Result.class);
-        return Result.success(result.getData(), net.ufrog.common.app.App.message("job.update.success", job.getName()));
+        return Result.success(PiscesAPIs.update(job.getId()).getData(), net.ufrog.common.app.App.message("job.update.success", job.getName()));
     }
 
     /**
@@ -135,16 +155,21 @@ public class JobController {
     @ResponseBody
     public Result<?> toggle(@PathVariable("jobId") String jobId) {
         Job job = jobService.findById(jobId);
-        if (Strings.equals(Job.Status.RUNNING, job.getStatus())) {
-            job.setStatus(Job.Status.PAUSED);
-        } else if (Strings.equals(Job.Status.PAUSED, job.getStatus())) {
-            job.setStatus(Job.Status.RUNNING);
-        } else {
-            throw new ServiceException("job status '" + job.getStatus() + "' invalid.");
-        }
+        job.setStatus(switchStatus(Job.Status.RUNNING, Job.Status.PAUSED, job.getStatus()));
         jobService.update(job);
-        Result<?> result = JSON.parseObject(HttpRequest.get(Props.getServerUrl() + "/api/update/" + jobId).send().bodyText(), Result.class);
-        return Result.success(result.getData(), net.ufrog.common.app.App.message("job.toggle.success", job.getName(), job.getStatusName()));
+        return Result.success(PiscesAPIs.update(jobId).getData(), net.ufrog.common.app.App.message("job.toggle.success", job.getName(), job.getStatusName()));
+    }
+
+    /**
+     * 触发任务
+     *
+     * @param jobId 任务编号
+     * @return 触发结果
+     */
+    @GetMapping("/trigger/{jobId}")
+    @ResponseBody
+    public Result<?> trigger(@PathVariable("jobId") String jobId) {
+        return PiscesAPIs.trigger(jobId);
     }
 
     /**
@@ -241,6 +266,24 @@ public class JobController {
             return app;
         } else {
             return Result.warning(net.ufrog.common.app.App.message("job.app.check.failure.not-exist"));
+        }
+    }
+
+    /**
+     * 切换状态
+     *
+     * @param status1 状态类型
+     * @param status2 状态类型
+     * @param status 当前状态
+     * @return 切换后状态
+     */
+    private String switchStatus(String status1, String status2, String status) {
+        if (Strings.equals(status1, status)) {
+            return status2;
+        } else if (Strings.equals(status2, status)) {
+            return status1;
+        } else {
+            throw new ServiceException("status '" + status + "' is not in '" + status1 + "', '" + status2 + "'.");
         }
     }
 }

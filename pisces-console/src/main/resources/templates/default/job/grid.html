@@ -47,7 +47,7 @@
             <td ng-class="{'text-danger': job.status === '00', 'text-success': job.status === '01'}" ng-bind="job.statusName"></td>
             <td ng-bind="job.nextFireTime|empty:'-'|date:'yyyy-MM-dd HH:mm:ss'"></td>
             <td class="link-group">
-                <a href="#" class="link-group-item">立即执行</a>
+                <a href="#" class="link-group-item" ng-click="jobFn.trigger(job)">立即执行</a>
                 <a href="#" class="link-group-item" ng-click="jobFn.log(job)">日志</a>
                 <a href="#" class="link-group-item" ng-click="jobFn.toggle(job)" ng-if="job.status === '00'">运行</a>
                 <a href="#" class="link-group-item" ng-click="jobFn.toggle(job)" ng-if="job.status === '01'">暂停</a>

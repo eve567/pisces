@@ -18,7 +18,7 @@ public class PiscesConfig {
     private String host;
 
     /** 模版目录 */
-    @PropertiesValue(value = "template.dir", defaultValue = "/template")
+    @PropertiesValue(value = "template.dir", defaultValue = "/templates/email")
     private String templateDir;
 
     /** 模版前缀 */

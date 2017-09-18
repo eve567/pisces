@@ -1,6 +1,7 @@
 package net.ufrog.pisces.service;
 
 import net.ufrog.pisces.domain.models.*;
+import org.springframework.data.domain.Page;
 
 import java.util.Date;
 import java.util.List;
@@ -60,6 +61,18 @@ public interface JobService {
      * @return 任务日志对象
      */
     JobLog findLogById(String jobLogId);
+
+    /**
+     * 通过任务编号查询任务日志
+     *
+     * @param jobId 任务编号
+     * @param beginDate 开始日期
+     * @param endDate 结束日期
+     * @param page 当前页码
+     * @param size 分页大小
+     * @return 任务日志分页信息
+     */
+    Page<JobLog> findLogsByJobId(String jobId, Date beginDate, Date endDate, Integer page, Integer size);
 
     /**
      * 创建任务

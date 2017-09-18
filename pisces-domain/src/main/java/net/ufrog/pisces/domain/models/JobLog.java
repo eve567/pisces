@@ -1,5 +1,7 @@
 package net.ufrog.pisces.domain.models;
 
+import net.ufrog.common.dict.Dicts;
+
 /**
  * 任务日志模型
  *
@@ -121,6 +123,15 @@ public class JobLog extends Model {
      */
     public void setJobId(java.lang.String jobId) {
         this.jobId = jobId;
+    }
+
+    /**
+     * 读取状态名称
+     *
+     * @return 状态名称
+     */
+    public String getStatusName() {
+        return Dicts.name(status, Status.class);
     }
 
     /**

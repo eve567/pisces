@@ -109,7 +109,7 @@ public class PiscesJobData implements Serializable {
      */
     public String getContent() {
         if (Strings.empty(content) && !Strings.empty(template)) {
-            content = Templates.renderFile(PiscesConfig.get().getTemplateDir() + "/" + PiscesConfig.get().getTemplatePrefix() + template + PiscesConfig.get().getTemplateSuffix(), mArg);
+            content = Templates.renderFile(PiscesConfig.get().getTemplateDir() + "/" + Strings.empty(PiscesConfig.get().getTemplatePrefix(), "") + template + PiscesConfig.get().getTemplateSuffix(), mArg);
             content = HtmlUtils.htmlEscape(content);
         }
         return content;

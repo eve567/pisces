@@ -1,6 +1,6 @@
 <script type="text/javascript">
     'use strict';
-    function jobCtrl($scope, $http) {
+    function jobCtrl($scope, $bootstrap) {
         angular.extend($scope, {
             // 初始化
             init: function() {
@@ -15,14 +15,9 @@
                 find: function() {
                     $scope.ctrl.status('gridView', 'grid');
                     $scope.ctrl.status('grid', 'loading');
-                    $http({
-                        method: 'jsonp',
-                        url: '${App::config("server_url")}/api/find_all/' + $scope.current.papp.id + '?' + $scope.date.timestamp()
-                    }).then(function(data) {
-                        $scope.jobs = data.data;
-                        $scope.ctrl.status('grid', 'loaded');
-                    }, function(data) {
-                        console.error(data);
+                    $scope.get('${app}/job/find_all/' + $scope.current.papp.id + '?' + $scope.date.timestamp(), function(data) {
+                        $scope.jobs = data;
+                    }, function() {
                         $scope.ctrl.status('grid', 'loaded');
                     });
                 },
@@ -34,9 +29,19 @@
                     $scope.ctrl.status('view', 'form');
                 },
 
+                // 触发任务
+                trigger: function(job) {
+                    $scope.get('${app}/job/trigger/' + job.id + '?' + $scope.date.timestamp(), function() {
+
+                    });
+                },
+
                 // 显示日志
                 log: function(job) {
                     $scope.current.job = job;
+                    $scope.beginDateObj = $scope.date.add(-7, 'd');
+                    $scope.endDateObj = $scope.date.current();
+                    $scope.jobLogFn.find(0, 15);
                     $scope.ctrl.status('view', 'log');
                 },
 
@@ -57,8 +62,19 @@
             // 任务日志功能集合
             jobLogFn: {
                 // 查询
-                find: function() {
-
+                find: function(page, size, $event) {
+                    if (!$scope.valid.empty($event)) $scope.ctrl.stop($event);
+                    $scope.ctrl.status('logGrid', 'loading');
+                    $scope.get('${app}/job/find_logs/' + $scope.current.job.id, {
+                        beginDate: $scope.date.format('yyyy-MM-dd 00:00:00', $scope.beginDateObj),
+                        endDate: $scope.date.format('yyyy-MM-dd 23:59:59', $scope.endDateObj),
+                        page: page,
+                        size: size
+                    }, function(data) {
+                        $bootstrap.page(data, 'logs');
+                    }, function() {
+                        $scope.ctrl.status('logGrid', 'loaded');
+                    });
                 }
             },
 

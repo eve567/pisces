@@ -1,5 +1,6 @@
 package net.ufrog.pisces.service.impls;
 
+import net.ufrog.common.data.spring.Domains;
 import net.ufrog.common.utils.Objects;
 import net.ufrog.common.utils.Strings;
 import net.ufrog.pisces.domain.Models;
@@ -7,6 +8,9 @@ import net.ufrog.pisces.domain.models.*;
 import net.ufrog.pisces.domain.repositories.*;
 import net.ufrog.pisces.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,6 +94,12 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobLog findLogById(String jobLogId) {
         return jobLogRepository.findOne(jobLogId);
+    }
+
+    @Override
+    public Page<JobLog> findLogsByJobId(String jobId, Date beginDate, Date endDate, Integer page, Integer size) {
+        Pageable pageable = Domains.pageable(page, size, Sort.Direction.DESC, "datetimeBegin");
+        return jobLogRepository.findByJobIdAndDatetimeBeginBetween(jobId, beginDate, endDate, pageable);
     }
 
     @Override
