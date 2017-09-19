@@ -103,6 +103,11 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
+    public List<JobLogDetail> findLogDetailsByLogId(String logId) {
+        return jobLogDetailRepository.findByJobLogId(logId, Domains.sort(Sort.Direction.DESC, "datetime"));
+    }
+
+    @Override
     @Transactional
     public Job create(Job job) {
         return jobRepository.save(job);

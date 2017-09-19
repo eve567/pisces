@@ -1,6 +1,6 @@
 <script type="text/javascript">
     'use strict';
-    function jobCtrl($scope, $bootstrap) {
+    function jobCtrl($scope, $bootstrap, $timeout) {
         angular.extend($scope, {
             // 初始化
             init: function() {
@@ -15,7 +15,7 @@
                 find: function() {
                     $scope.ctrl.status('gridView', 'grid');
                     $scope.ctrl.status('grid', 'loading');
-                    $scope.get('${app}/job/find_all/' + $scope.current.papp.id + '?' + $scope.date.timestamp(), function(data) {
+                    $scope.get('${app}/job/find_all/' + $scope.current.papp.id, function(data) {
                         $scope.jobs = data;
                     }, function() {
                         $scope.ctrl.status('grid', 'loaded');
@@ -30,9 +30,12 @@
                 },
 
                 // 触发任务
-                trigger: function(job) {
-                    $scope.get('${app}/job/trigger/' + job.id + '?' + $scope.date.timestamp(), function() {
-
+                trigger: function() {
+                    $scope.ctrl.status('triggerBtn', 'processing');
+                    $scope.get('${app}/job/trigger/' + $scope.current.job.id, function() {
+                        $bootstrap.modal.hide('triggerModal');
+                    }, function() {
+                        $scope.ctrl.status('triggerBtn', 'standby');
                     });
                 },
 
@@ -50,6 +53,13 @@
                     $scope.put('${app}/job/toggle/' + job.id, function(data) {
                         $scope.array.replace($scope.jobs, data.data);
                     });
+                },
+
+                // 弹出立即执行确认弹窗
+                popTriggerModal: function(job) {
+                    $scope.current.job = job;
+                    $scope.ctrl.status('triggerBtn', 'standby');
+                    $bootstrap.modal.show('triggerModal');
                 },
 
                 // 取消
@@ -74,7 +84,23 @@
                         $bootstrap.page(data, 'logs');
                     }, function() {
                         $scope.ctrl.status('logGrid', 'loaded');
+                        $scope.logDetails = {};
                     });
+                },
+
+                // 显示日志明细
+                details: function(log, $event) {
+                    if ($scope.valid.undefined($scope.logDetails[log.id])) {
+                        $scope.ctrl.status(log.id, 'loading');
+                        $scope.get('${app}/job/find_log_details/' + log.id, function(data) {
+                            $scope.logDetails[log.id] = data;
+                            $timeout(function() {
+                                $bootstrap.popover.show($scope.$($event.currentTarget));
+                            }, 500);
+                        }, function() {
+                            $scope.ctrl.status(log.id, 'loaded');
+                        });
+                    }
                 }
             },
 

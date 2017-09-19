@@ -40,8 +40,21 @@
             <td ng-bind="log.statusName"></td>
             <td ng-bind="log.remark|empty:'-'"></td>
             <td class="link-group">
-                <a href="#" class="link-group-item">明细</a>
                 <a href="#" class="link-group-item" ng-if="log.status === '00'">手动结束</a>
+                <a href="#" class="link-group-item" popover popover-trigger="focus" ng-click="jobLogFn.details(log, $event)">
+                    <span>明细</span>
+                    <div class="popover-body">
+                        <ul class="timeline">
+                            <li class="ng-fade" ng-if="ctrl.status(log.id, ['loading'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></li>
+                            <li class="ng-fade" ng-if="ctrl.status(log.id, ['loaded'])" ng-repeat="ld in logDetails[log.id]">
+                                <strong ng-bind="ld.datetime|date:'yyyy-MM-dd HH:mm:ss'"></strong><br>
+                                <strong ng-bind="ld.typeName" ng-class="{'text-success': ld.type === '10', 'text-danger': (ld.type === '20' || ld.type === '21'), 'text-info': (ld.type !== '10' && ld.type !== '20' && ld.type !== '21')}"></strong>
+                                <span>#</span>
+                                <span ng-bind="ld.remark"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </a>
             </td>
         </tr>
         <tr ng-if="ctrl.status('logGrid', ['loaded']) && valid.empty(logs)"><td class="text-warning" col-span><fa i="exclamation-triangle">&nbsp;${app.msg('common.empty')}</fa></td></tr>

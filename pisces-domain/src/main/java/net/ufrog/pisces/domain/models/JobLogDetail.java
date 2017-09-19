@@ -1,5 +1,7 @@
 package net.ufrog.pisces.domain.models;
 
+import net.ufrog.common.dict.Dicts;
+
 /**
  * 任务日志明细模型
  *
@@ -99,6 +101,15 @@ public class JobLogDetail extends Model {
      */
     public void setJobLogId(java.lang.String jobLogId) {
         this.jobLogId = jobLogId;
+    }
+
+    /**
+     * 读取类型名称
+     *
+     * @return 类型名称
+     */
+    public String getTypeName() {
+        return Dicts.name(type, Type.class);
     }
 
     /**

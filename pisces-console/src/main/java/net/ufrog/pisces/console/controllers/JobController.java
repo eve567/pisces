@@ -118,6 +118,18 @@ public class JobController {
     }
 
     /**
+     * 查询日志明细
+     *
+     * @param logId 日志编号
+     * @return 日志明细列表
+     */
+    @GetMapping("/find_log_details/{logId}")
+    @ResponseBody
+    public List<JobLogDetail> findLogDetails(@PathVariable("logId") String logId) {
+        return jobService.findLogDetailsByLogId(logId);
+    }
+
+    /**
      * 创建任务
      *
      * @param job 任务对象

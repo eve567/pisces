@@ -75,6 +75,14 @@ public interface JobService {
     Page<JobLog> findLogsByJobId(String jobId, Date beginDate, Date endDate, Integer page, Integer size);
 
     /**
+     * 通过日志编号查询日志明细
+     *
+     * @param logId 日志编号
+     * @return 日志明细列表
+     */
+    List<JobLogDetail> findLogDetailsByLogId(String logId);
+
+    /**
      * 创建任务
      *
      * @param job 任务实例
