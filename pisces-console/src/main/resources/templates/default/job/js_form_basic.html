@@ -36,7 +36,7 @@
                 $scope.post('${app}/job/create', job, function(data) {
                     $scope.array.add($scope.jobs, data.data);
                     angular.extend($scope.current.job, data.data);
-                    $scope.tabFn.setup(true);
+                    $scope.setup(true);
                     $scope.init();
                 }, function() {
                     $scope.ctrl.status('saveBtn', 'standby');

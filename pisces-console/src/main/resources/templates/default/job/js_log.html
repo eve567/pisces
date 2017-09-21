@@ -1,0 +1,45 @@
+<script type="text/javascript">
+    'use strict';
+    function jobLogCtrl($scope, $bootstrap, $timeout) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.beginDateObj = $scope.date.add(-7, 'd');
+                $scope.endDateObj = $scope.date.current();
+                $scope.find(0, 15);
+            },
+
+            // 查询
+            find: function(page, size, $event) {
+                if (!$scope.valid.empty($event)) $scope.ctrl.stop($event);
+                $scope.ctrl.status('logGrid', 'loading');
+                $scope.get('${app}/job/find_logs/' + $scope.current.job.id, {
+                    beginDate: $scope.date.format('yyyy-MM-dd 00:00:00', $scope.beginDateObj),
+                    endDate: $scope.date.format('yyyy-MM-dd 23:59:59', $scope.endDateObj),
+                    page: page,
+                    size: size
+                }, function(data) {
+                    $bootstrap.page(data, 'logs');
+                }, function() {
+                    $scope.ctrl.status('logGrid', 'loaded');
+                    $scope.logDetails = {};
+                });
+            },
+
+            // 显示日志明细
+            details: function(log, $event) {
+                if ($scope.valid.undefined($scope.logDetails[log.id])) {
+                    $scope.ctrl.status(log.id, 'loading');
+                    $scope.get('${app}/job/find_log_details/' + log.id, function(data) {
+                        $scope.logDetails[log.id] = data;
+                        $timeout(function() {
+                            $bootstrap.popover.show($scope.$($event.currentTarget));
+                        }, 500);
+                    }, function() {
+                        $scope.ctrl.status(log.id, 'loaded');
+                    });
+                }
+            }
+        }).init();
+    }
+</script>

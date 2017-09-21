@@ -1,19 +1,7 @@
 <script type="text/javascript">
     'use strict';
-    function aaa($scope) {
-        return {
-            a: function() {
-
-            },
-
-            b: function() {
-
-            }
-        };
-    }
-
     function jobParamCtrl($scope, $bootstrap) {
-        angular.extend($scope, aaa($scope), {
+        angular.extend($scope, {
             // 初始化
             init: function() {
                 $scope.find();

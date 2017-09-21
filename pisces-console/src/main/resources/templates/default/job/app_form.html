@@ -1,0 +1,56 @@
+<div class="panel panel-default" ng-controller="appFormCtrl">
+    <div class="panel-heading clearfix">
+        <span class="pull-left">应用设置</span>
+        <ul class="panel-heading-group">
+            <li panel-heading-dropdown>
+                <a href="#"><span ng-bind="current.app.name"></span>&nbsp;<fa i="caret-down"></fa></a>
+                <ul class="panel-heading-dropdown">
+                    <li ng-repeat="app in $apps|exclude:current.app"><a href="#" ng-click="appFn.active(app)"><fa i="caret-right">&nbsp;<span ng-bind="app.name"></span></fa></a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="panel-body">
+        <form name="appForm" method="post" action="#" class="form-horizontal" ng-submit="save($event)">
+            <div class="form-group">
+                <label class="col-sm-1 control-label">名称</label>
+                <div class="col-sm-2">
+                    <input name="name" class="form-control" ng-model="app.name" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label"><rq>请求地址</rq></label>
+                <div class="col-sm-4">
+                    <input type="url" name="url" class="form-control" placeholder="http://" ng-model="app.url" required maxlength="250">
+                    <alert-pop field="appForm.url">
+                        <alert-pop-item type="required">请求地址不能为空</alert-pop-item>
+                        <alert-pop-item type="url">请求地址格式不正确</alert-pop-item>
+                        <alert-pop-item type="maxlength">请求地址不能超过250个字符</alert-pop-item>
+                    </alert-pop>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">通知邮件</label>
+                <div class="col-sm-4">
+                    <textarea name="email" class="form-control" rows="3" placeholder="多个邮件地址请使用西文逗号分隔" ng-model="app.email"></textarea>
+                </div>
+            </div>
+            <div class="form-group" ng-if="!valid.empty(app.id)">
+                <label class="col-sm-1 control-label">配置参数</label>
+                <div class="col-sm-6">
+                    <pre class="margin-bottom-zero" ng-bind-html="config()"></pre>
+                </div>
+            </div>
+            <div class="form-group margin-bottom-zero">
+                <div class="col-sm-offset-1 col-sm-11">
+                    <button class="btn btn-success" ng-disabled="appFn.disabledSaveBtn()">
+                        <span ng-show="ctrl.status('saveBtn', ['standby'])"><fa i="floppy-o">&nbsp;${app.msg('common.op.save')}</fa></span>
+                        <span ng-show="ctrl.status('saveBtn', ['processing'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></span>
+                    </button>
+                    <button type="button" class="btn btn-default" ng-click="jobFn.cancel()" ng-if="!valid.empty(app.id)"><fa i="times-circle">&nbsp;${app.msg('common.op.cancel')}</fa></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- #include('js_app_form.html') -->

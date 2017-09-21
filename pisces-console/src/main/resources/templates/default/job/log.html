@@ -1,70 +1,73 @@
-<div class="panel panel-default">
-    <div class="panel-heading">任务「<span ng-bind="current.job.name"></span>」日志</div>
-    <div class="panel-body">
-        <form name="logSearchForm" method="post" action="#" class="form-horizontal" ng-submit="jobLogFn.find(0, 15, $event)">
-            <div class="form-group margin-bottom-zero">
-                <div class="col-sm-4">
-                    <div class="input-group">
-                        <input type="date" class="form-control" ng-model="beginDateObj" required ng-max="endDateObj">
-                        <span class="input-group-addon">-</span>
-                        <input type="date" class="form-control" ng-model="endDateObj" required ng-min="beginDateObj">
+<div ng-controller="jobLogCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading">任务「<span ng-bind="current.job.name"></span>」日志</div>
+        <div class="panel-body">
+            <form name="logSearchForm" method="post" action="#" class="form-horizontal" ng-submit="find(0, 15, $event)">
+                <div class="form-group margin-bottom-zero">
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <input type="date" class="form-control" ng-model="beginDateObj" required ng-max="endDateObj">
+                            <span class="input-group-addon">-</span>
+                            <input type="date" class="form-control" ng-model="endDateObj" required ng-min="beginDateObj">
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <button class="btn btn-primary" ng-disabled="logSearchForm.$invalid"><fa i="search">&nbsp;查询</fa></button>
                     </div>
                 </div>
-                <div class="col-sm-8">
-                    <button class="btn btn-primary" ng-disabled="logSearchForm.$invalid"><fa i="search">&nbsp;查询</fa></button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
+        <table>
+            <colgroup>
+                <col width="15%">
+                <col width="15%">
+                <col width="10%">
+                <col width="20%">
+                <col width="40%">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>开始时间</th>
+                <th>结束时间</th>
+                <th>状态</th>
+                <th>备注</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="log in logs" ng-show="ctrl.status('logGrid', ['loaded'])">
+                <td ng-bind="log.datetimeBegin|date:'yyyy-MM-dd HH:mm:ss'"></td>
+                <td ng-bind="log.datetimeEnd|date:'yyyy-MM-dd HH:mm:ss'|empty:'-'"></td>
+                <td ng-bind="log.statusName"></td>
+                <td ng-bind="log.remark|empty:'-'"></td>
+                <td class="link-group">
+                    <a href="#" class="link-group-item" ng-if="log.status === '00'">手动结束</a>
+                    <a href="#" class="link-group-item" popover popover-trigger="focus" ng-click="details(log, $event)">
+                        <span>明细</span>
+                        <div class="popover-body">
+                            <ul class="timeline">
+                                <li class="ng-fade" ng-if="ctrl.status(log.id, ['loading'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></li>
+                                <li class="ng-fade" ng-if="ctrl.status(log.id, ['loaded'])" ng-repeat="ld in logDetails[log.id]">
+                                    <strong ng-bind="ld.datetime|date:'yyyy-MM-dd HH:mm:ss'"></strong><br>
+                                    <strong ng-bind="ld.typeName" ng-class="{'text-success': ld.type === '10', 'text-danger': (ld.type === '20' || ld.type === '21'), 'text-info': (ld.type !== '10' && ld.type !== '20' && ld.type !== '21')}"></strong>
+                                    <span>#</span>
+                                    <span ng-bind="ld.remark"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </a>
+                </td>
+            </tr>
+            <tr ng-if="ctrl.status('logGrid', ['loaded']) && valid.empty(logs)"><td class="text-warning" col-span><fa i="exclamation-triangle">&nbsp;${app.msg('common.empty')}</fa></td></tr>
+            <tr ng-if="ctrl.status('logGrid', ['loading'])"><td col-span><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></td></tr>
+            </tbody>
+        </table>
     </div>
-    <table>
-        <colgroup>
-            <col width="15%">
-            <col width="15%">
-            <col width="10%">
-            <col width="20%">
-            <col width="40%">
-        </colgroup>
-        <thead>
-        <tr>
-            <th>开始时间</th>
-            <th>结束时间</th>
-            <th>状态</th>
-            <th>备注</th>
-            <th>&nbsp;</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="log in logs" ng-show="ctrl.status('logGrid', ['loaded'])">
-            <td ng-bind="log.datetimeBegin|date:'yyyy-MM-dd HH:mm:ss'"></td>
-            <td ng-bind="log.datetimeEnd|date:'yyyy-MM-dd HH:mm:ss'|empty:'-'"></td>
-            <td ng-bind="log.statusName"></td>
-            <td ng-bind="log.remark|empty:'-'"></td>
-            <td class="link-group">
-                <a href="#" class="link-group-item" ng-if="log.status === '00'">手动结束</a>
-                <a href="#" class="link-group-item" popover popover-trigger="focus" ng-click="jobLogFn.details(log, $event)">
-                    <span>明细</span>
-                    <div class="popover-body">
-                        <ul class="timeline">
-                            <li class="ng-fade" ng-if="ctrl.status(log.id, ['loading'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></li>
-                            <li class="ng-fade" ng-if="ctrl.status(log.id, ['loaded'])" ng-repeat="ld in logDetails[log.id]">
-                                <strong ng-bind="ld.datetime|date:'yyyy-MM-dd HH:mm:ss'"></strong><br>
-                                <strong ng-bind="ld.typeName" ng-class="{'text-success': ld.type === '10', 'text-danger': (ld.type === '20' || ld.type === '21'), 'text-info': (ld.type !== '10' && ld.type !== '20' && ld.type !== '21')}"></strong>
-                                <span>#</span>
-                                <span ng-bind="ld.remark"></span>
-                            </li>
-                        </ul>
-                    </div>
-                </a>
-            </td>
-        </tr>
-        <tr ng-if="ctrl.status('logGrid', ['loaded']) && valid.empty(logs)"><td class="text-warning" col-span><fa i="exclamation-triangle">&nbsp;${app.msg('common.empty')}</fa></td></tr>
-        <tr ng-if="ctrl.status('logGrid', ['loading'])"><td col-span><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></td></tr>
-        </tbody>
-    </table>
-</div>
-<div class="table-footer clearfix">
-    <div class="pull-left">
-        <button class="btn btn-default" ng-click="jobFn.cancel()"><fa i="times-circle">&nbsp;返回</fa></button>
+    <div class="table-footer clearfix">
+        <div class="pull-left">
+            <button class="btn btn-default" ng-click="jobFn.cancel()"><fa i="times-circle">&nbsp;返回</fa></button>
+        </div>
+        <pagination method="find" size="15" class="pull-right"></pagination>
     </div>
-    <pagination method="jobLogFn.find" size="15" delay="true" class="pull-right"></pagination>
 </div>
+<!-- #include('js_log.html') -->

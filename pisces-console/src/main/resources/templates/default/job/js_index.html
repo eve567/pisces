@@ -1,6 +1,6 @@
 <script type="text/javascript">
     'use strict';
-    function jobCtrl($scope, $bootstrap, $timeout) {
+    function jobCtrl($scope, $bootstrap) {
         angular.extend($scope, {
             // 初始化
             init: function() {
@@ -13,9 +13,8 @@
             jobFn: {
                 // 查询数据
                 find: function() {
-                    $scope.ctrl.status('gridView', 'grid');
                     $scope.ctrl.status('grid', 'loading');
-                    $scope.get('${app}/job/find_all/' + $scope.current.papp.id, function(data) {
+                    $scope.get('${app}/job/find_all/' + $scope.current.papp.id + '?' + $scope.date.timestamp(), function(data) {
                         $scope.jobs = data;
                     }, function() {
                         $scope.ctrl.status('grid', 'loaded');
@@ -25,8 +24,8 @@
                 // 任务表单
                 form: function(job) {
                     $scope.current.job = job || {};
-                    $scope.tabFn.setup();
-                    $scope.ctrl.status('view', 'form');
+                    $scope.jobUrl = '${app}/_view/job@form?' + $scope.date.timestamp();
+                    $scope.ctrl.status('view', 'others');
                 },
 
                 // 触发任务
@@ -42,10 +41,8 @@
                 // 显示日志
                 log: function(job) {
                     $scope.current.job = job;
-                    $scope.beginDateObj = $scope.date.add(-7, 'd');
-                    $scope.endDateObj = $scope.date.current();
-                    $scope.jobLogFn.find(0, 15);
-                    $scope.ctrl.status('view', 'log');
+                    $scope.jobUrl = '${app}/_view/job@log?' + $scope.date.timestamp();
+                    $scope.ctrl.status('view', 'others');
                 },
 
                 // 切换任务状态
@@ -65,42 +62,6 @@
                 // 取消
                 cancel: function() {
                     $scope.ctrl.status('view', 'grid');
-                    $scope.ctrl.status('gridView', 'grid');
-                }
-            },
-
-            // 任务日志功能集合
-            jobLogFn: {
-                // 查询
-                find: function(page, size, $event) {
-                    if (!$scope.valid.empty($event)) $scope.ctrl.stop($event);
-                    $scope.ctrl.status('logGrid', 'loading');
-                    $scope.get('${app}/job/find_logs/' + $scope.current.job.id, {
-                        beginDate: $scope.date.format('yyyy-MM-dd 00:00:00', $scope.beginDateObj),
-                        endDate: $scope.date.format('yyyy-MM-dd 23:59:59', $scope.endDateObj),
-                        page: page,
-                        size: size
-                    }, function(data) {
-                        $bootstrap.page(data, 'logs');
-                    }, function() {
-                        $scope.ctrl.status('logGrid', 'loaded');
-                        $scope.logDetails = {};
-                    });
-                },
-
-                // 显示日志明细
-                details: function(log, $event) {
-                    if ($scope.valid.undefined($scope.logDetails[log.id])) {
-                        $scope.ctrl.status(log.id, 'loading');
-                        $scope.get('${app}/job/find_log_details/' + log.id, function(data) {
-                            $scope.logDetails[log.id] = data;
-                            $timeout(function() {
-                                $bootstrap.popover.show($scope.$($event.currentTarget));
-                            }, 500);
-                        }, function() {
-                            $scope.ctrl.status(log.id, 'loaded');
-                        });
-                    }
                 }
             },
 
@@ -109,9 +70,9 @@
                 // 激活
                 active: function(app) {
                     $scope.current.app = app;
-                    $scope.jobFn.cancel();
                     $scope.get('${app}/job/check_app/' + $scope.current.app.id, function(data) {
                         $scope.current.papp = data;
+                        $scope.jobFn.cancel();
                         $scope.jobFn.find();
                     }, null, null, function() {
                         $scope.appFn.form();
@@ -120,74 +81,10 @@
 
                 // 应用表单
                 form: function(app) {
-                    $scope.app = angular.extend({
-                        name: $scope.current.app.name,
-                        leoAppId: $scope.current.app.id
-                    }, app);
-
+                    $scope.jobUrl = '${app}/_view/job@app_form?' + $scope.date.timestamp();
+                    $scope.app = angular.extend({name: $scope.current.app.name, leoAppId: $scope.current.app.id}, app);
                     $scope.object.delete($scope.app, ['creator', 'createTime', 'updater', 'updateTime']);
-                    $scope.ctrl.status('gridView', 'appForm');
-                    $scope.ctrl.status('appSaveBtn', 'standby');
-                },
-
-                // 保存应用
-                save: function($event) {
-                    $scope.ctrl.stop($event);
-                    $scope.ctrl.status('appSaveBtn', 'processing');
-                    if ($scope.valid.empty($scope.app.id)) {
-                        $scope.appFn.create($scope.app);
-                    } else {
-                        $scope.appFn.update($scope.app);
-                    }
-                },
-
-                // 创建应用
-                create: function(app) {
-                    $scope.post('${app}/job/create_app', app, function() {
-                        $scope.appFn.active($scope.current.app);
-                    }, function() {
-                        $scope.ctrl.status('appSaveBtn', 'standby');
-                    });
-                },
-
-                // 更新应用
-                update: function(app) {
-                    $scope.put('${app}/job/update_app', app, function() {
-                        $scope.jobFn.cancel();
-                    }, function() {
-                        $scope.ctrl.status('appSaveBtn', 'standby');
-                    });
-                },
-
-                // 判断应用保存按钮是否有效
-                disabledSaveBtn: function() {
-                    if ($scope.appForm.$invalid) return true;
-                    else if ($scope.ctrl.status('appSaveBtn', ['processing'])) return true;
-                    return false;
-                }
-            },
-
-            // 标签功能集合
-            tabFn: {
-                // 设置
-                setup: function(isAdd) {
-                    if (!isAdd) {
-                        $scope.tabs = [];
-                        $scope.tabs.push({name: '基础', url: '${app}/_view/job@form_basic'});
-                    } if (!$scope.valid.empty($scope.current.job.id)) {
-                        $scope.tabs.push({name: '参数', url: '${app}/_view/job@form_param'});
-                        $scope.tabs.push({name: '控制', url: '${app}/_view/job@form_ctrl'});
-                    } if (!isAdd) {
-                        $scope.tabFn.active($scope.tabs[0]);
-                    }
-                },
-
-                // 激活
-                active: function(tab) {
-                    if ($scope.current.tab !== tab) {
-                        $scope.current.tab = tab;
-                        $scope.tabUrl = $scope.current.tab.url + '?' + $scope.date.timestamp();
-                    }
+                    $scope.ctrl.status('view', 'others');
                 }
             },
 

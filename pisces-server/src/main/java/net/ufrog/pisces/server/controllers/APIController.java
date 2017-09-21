@@ -2,6 +2,7 @@ package net.ufrog.pisces.server.controllers;
 
 import net.ufrog.common.Result;
 import net.ufrog.common.app.App;
+import net.ufrog.common.utils.Strings;
 import net.ufrog.pisces.server.JobWrapper;
 import net.ufrog.pisces.server.PiscesApp;
 import org.hibernate.service.spi.ServiceException;
@@ -64,13 +65,15 @@ public class APIController {
      * 触发任务
      *
      * @param id 任务编号
+     * @param remark 备注
      * @return 触发结果
      */
     @GetMapping("/trigger/{id}")
-    public Result<JobWrapper> trigger(@PathVariable("id") String id) {
+    public Result<JobWrapper> trigger(@PathVariable("id") String id, String remark) {
         JobWrapper jobWrapper = PiscesApp.getJob(id);
+        remark = Strings.empty(remark) ? App.message("job.trigger.manual") : Strings.fromUnicode(remark);
         if (jobWrapper != null) {
-            PiscesApp.doJob(jobWrapper, null, App.message("job.trigger.manual"));
+            PiscesApp.doJob(jobWrapper, null, remark);
             return Result.success(jobWrapper, App.message("job.trigger.success"));
         }
         return Result.failure(App.message("job.get.no-exists"));

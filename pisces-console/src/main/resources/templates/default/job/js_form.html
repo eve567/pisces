@@ -1,0 +1,32 @@
+<script type="text/javascript">
+    'use strict';
+    function jobFormCtrl($scope) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.setup();
+            },
+
+            // 设置
+            setup: function(isAdd) {
+                if (!isAdd) {
+                    $scope.tabs = [];
+                    $scope.tabs.push({name: '基础', url: '${app}/_view/job@form_basic'});
+                } if (!$scope.valid.empty($scope.current.job.id)) {
+                    $scope.tabs.push({name: '参数', url: '${app}/_view/job@form_param'});
+                    $scope.tabs.push({name: '控制', url: '${app}/_view/job@form_ctrl'});
+                } if (!isAdd) {
+                    $scope.active($scope.tabs[0]);
+                }
+            },
+
+            // 激活
+            active: function(tab) {
+                if ($scope.current.tab !== tab) {
+                    $scope.current.tab = tab;
+                    $scope.tabUrl = $scope.current.tab.url + '?' + $scope.date.timestamp();
+                }
+            }
+        }).init();
+    }
+</script>

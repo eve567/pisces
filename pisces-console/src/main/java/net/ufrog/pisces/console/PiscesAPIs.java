@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
 import net.ufrog.common.Result;
+import net.ufrog.common.utils.Strings;
 import net.ufrog.pisces.service.beans.Props;
 
 import java.util.List;
@@ -62,10 +63,11 @@ public class PiscesAPIs {
      * 触发任务
      *
      * @param jobId 任务编号
+     * @param remark 备注
      * @return 触发结果
      */
-    public static Result<?> trigger(String jobId) {
-        HttpResponse resp = HttpRequest.get(Props.getServerUrl() + String.format(URI_TRIGGER, jobId)).charset("utf-8").send();
+    public static Result<?> trigger(String jobId, String remark) {
+        HttpResponse resp = HttpRequest.get(Props.getServerUrl() + String.format(URI_TRIGGER, jobId)).query("remark", Strings.empty(remark) ? "" : Strings.toUnicode(remark)).charset("utf-8").send();
         return JSON.parseObject(resp.bodyText(), Result.class);
     }
 }

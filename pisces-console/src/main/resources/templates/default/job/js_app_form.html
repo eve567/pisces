@@ -1,0 +1,58 @@
+<script type="text/javascript">
+    'use strict';
+    function appFormCtrl($scope) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.ctrl.status('saveBtn', 'standby');
+            },
+
+            // 保存应用
+            save: function($event) {
+                $scope.ctrl.stop($event);
+                $scope.ctrl.status('saveBtn', 'processing');
+                if ($scope.valid.empty($scope.app.id)) {
+                    $scope.create($scope.app);
+                } else {
+                    $scope.update($scope.app);
+                }
+            },
+
+            // 创建应用
+            create: function(app) {
+                $scope.post('${app}/job/create_app', app, function() {
+                    $scope.appFn.active($scope.current.app);
+                }, function() {
+                    $scope.ctrl.status('saveBtn', 'standby');
+                });
+            },
+
+            // 更新应用
+            update: function(app) {
+                $scope.put('${app}/job/update_app', app, function() {
+                    $scope.jobFn.cancel();
+                }, function() {
+                    $scope.ctrl.status('saveBtn', 'standby');
+                });
+            },
+
+            // 配置内容
+            config: function() {
+                return [
+                    'pisces:',
+                    '  host: "${App::config("server_url")}"',
+                    '  app:',
+                    '    id: "' + $scope.app.id + '"',
+                    '    secret: "' + $scope.app.secret + '"'
+                ].join('<br>');
+            },
+
+            // 判断应用保存按钮是否有效
+            disabledSaveBtn: function() {
+                if ($scope.appForm.$invalid) return true;
+                else if ($scope.ctrl.status('saveBtn', ['processing'])) return true;
+                return false;
+            }
+        }).init();
+    }
+</script>

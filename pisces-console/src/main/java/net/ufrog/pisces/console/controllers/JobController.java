@@ -176,12 +176,13 @@ public class JobController {
      * 触发任务
      *
      * @param jobId 任务编号
+     * @param remark 备注
      * @return 触发结果
      */
     @GetMapping("/trigger/{jobId}")
     @ResponseBody
-    public Result<?> trigger(@PathVariable("jobId") String jobId) {
-        return PiscesAPIs.trigger(jobId);
+    public Result<?> trigger(@PathVariable("jobId") String jobId, String remark) {
+        return PiscesAPIs.trigger(jobId, remark);
     }
 
     /**
