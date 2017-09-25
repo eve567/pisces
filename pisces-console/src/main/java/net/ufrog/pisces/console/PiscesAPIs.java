@@ -5,6 +5,7 @@ import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
 import net.ufrog.common.Result;
 import net.ufrog.common.utils.Strings;
+import net.ufrog.pisces.client.PiscesJobData;
 import net.ufrog.pisces.service.beans.Props;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class PiscesAPIs {
     private static final String URI_CREATE      = "/api/create/%s";
     private static final String URI_UPDATE      = "/api/update/%s";
     private static final String URI_TRIGGER     = "/api/trigger/%s";
+    private static final String URI_CALLBACK    = "/callback";
 
     /** 构造函数 */
     private PiscesAPIs() {}
@@ -68,6 +70,21 @@ public class PiscesAPIs {
      */
     public static Result<?> trigger(String jobId, String remark) {
         HttpResponse resp = HttpRequest.get(Props.getServerUrl() + String.format(URI_TRIGGER, jobId)).query("remark", Strings.empty(remark) ? "" : Strings.toUnicode(remark)).charset("utf-8").send();
+        return JSON.parseObject(resp.bodyText(), Result.class);
+    }
+
+    /**
+     * 回调任务
+     *
+     * @param jobLogId 任务日志编号
+     * @param remark 备注
+     * @return 回调结果
+     */
+    public static Result<?> callback(String jobLogId, String remark) {
+        PiscesJobData piscesJobData = new PiscesJobData(jobLogId);
+        Result<PiscesJobData> rPjd = Result.success(piscesJobData, Strings.toUnicode(remark));
+
+        HttpResponse resp = HttpRequest.post(Props.getServerUrl() + URI_CALLBACK).body(JSON.toJSONString(rPjd)).charset("utf-8").send();
         return JSON.parseObject(resp.bodyText(), Result.class);
     }
 }

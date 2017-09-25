@@ -31,7 +31,7 @@
                 // 触发任务
                 trigger: function() {
                     $scope.ctrl.status('triggerBtn', 'processing');
-                    $scope.get('${app}/job/trigger/' + $scope.current.job.id, function() {
+                    $scope.get('${app}/job/trigger/' + $scope.current.job.id, {remark: $scope.toUnicode($scope.modal.remark)}, function() {
                         $bootstrap.modal.hide('triggerModal');
                     }, function() {
                         $scope.ctrl.status('triggerBtn', 'standby');
@@ -55,6 +55,7 @@
                 // 弹出立即执行确认弹窗
                 popTriggerModal: function(job) {
                     $scope.current.job = job;
+                    $scope.modal = {};
                     $scope.ctrl.status('triggerBtn', 'standby');
                     $bootstrap.modal.show('triggerModal');
                 },

@@ -81,7 +81,7 @@ public class IndexController {
 
         try {
             String remark = Strings.empty(rPjd.getFirstMessage(), App.message(rPjd.success() ? "job.callback.success" : "job.callback.failure"));
-            jobService.createLogDetail(pjd.getNum(), remark, pjd.getStatus());
+            jobService.createLogDetail(pjd.getNum(), Strings.fromUnicode(remark), pjd.getStatus());
             JobLog jobLog = jobService.updateLog(pjd.getNum(), pjd.getStatus(), sendEmail(pjd), null);
 
             setNextDate(jobLog);

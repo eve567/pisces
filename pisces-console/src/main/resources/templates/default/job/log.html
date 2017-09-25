@@ -41,7 +41,7 @@
                 <td ng-bind="log.statusName"></td>
                 <td ng-bind="log.remark|empty:'-'"></td>
                 <td class="link-group">
-                    <a href="#" class="link-group-item" ng-if="log.status === '00'">手动结束</a>
+                    <a href="#" class="link-group-item" ng-if="log.status === '00'" ng-click="popLogCompleteModal(log)">手动结束</a>
                     <a href="#" class="link-group-item" popover popover-trigger="focus" ng-click="details(log, $event)">
                         <span>明细</span>
                         <div class="popover-body">
@@ -69,5 +69,6 @@
         </div>
         <pagination method="find" size="15" class="pull-right"></pagination>
     </div>
+    <!-- #include('modal_log_complete.html') -->
 </div>
 <!-- #include('js_log.html') -->

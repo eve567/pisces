@@ -218,7 +218,7 @@ public class PiscesApp extends SpringWebApp {
      */
     public static void completeJob(String key) {
         JobWrapper jobWrapper = getJob(key);
-        if (jobWrapper != null) {
+        if (jobWrapper != null && mJobStatus.get(key) != null) {
             Integer total = mJobStatus.get(key).decr();
             if (total == 0) {
                 JobStatus jobStatus = mJobStatus.get(key);

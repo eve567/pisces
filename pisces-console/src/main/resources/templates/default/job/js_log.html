@@ -26,6 +26,17 @@
                 });
             },
 
+            // 结束任务
+            complete: function() {
+                $scope.ctrl.status('completeBtn', 'processing');
+                $scope.get('${app}/job/complete/' + $scope.current.log.id, {remark: $scope.toUnicode($scope.modal.remark)}, function(data) {
+                    $bootstrap.modal.hide('logCompleteModal');
+                    $scope.array.replace($scope.logs, data.data);
+                }, function() {
+                    $scope.ctrl.status('completeBtn', 'standby');
+                });
+            },
+
             // 显示日志明细
             details: function(log, $event) {
                 if ($scope.valid.undefined($scope.logDetails[log.id])) {
@@ -39,6 +50,14 @@
                         $scope.ctrl.status(log.id, 'loaded');
                     });
                 }
+            },
+
+            // 弹出任务结束确认框
+            popLogCompleteModal: function(log) {
+                $scope.current.log = log;
+                $scope.modal = {};
+                $scope.ctrl.status('completeBtn', 'standby');
+                $bootstrap.modal.show('logCompleteModal');
             }
         }).init();
     }

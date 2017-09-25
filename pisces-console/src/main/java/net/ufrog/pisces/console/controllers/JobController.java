@@ -186,6 +186,25 @@ public class JobController {
     }
 
     /**
+     * 结束任务
+     *
+     * @param jobLogId 任务日志编号
+     * @param remark 备注
+     * @return 结束结果
+     */
+    @GetMapping("/complete/{jobLogId}")
+    @ResponseBody
+    public Result<JobLog> complete(@PathVariable("jobLogId") String jobLogId, String remark) {
+        Result<?> result = PiscesAPIs.callback(jobLogId, remark);
+        JobLog jobLog = jobService.findLogById(jobLogId);
+
+        if (result.success()) {
+            return Result.success(jobLog, net.ufrog.common.app.App.message("job.complete.success"));
+        }
+        return Result.create(result.getType(), jobLog, result.getFirstMessage());
+    }
+
+    /**
      * 创建任务参数
      *
      * @param jobParam 任务参数

@@ -1,0 +1,12 @@
+<modal id="logCompleteModal" title="是否确认结束此次任务？">
+    <p class="text-warning"><fa i="info-circle">&nbsp;是否确认结束当前任务？</fa></p>
+    <p class="text-warning"><fa i="info-circle">&nbsp;请确保任务端状态，结束任务仅处理服务端状态，并不会终止任务实际任务！</fa></p>
+    <p class="margin-bottom-zero">
+        <textarea class="form-control" placeholder="请填写手动结束备注" ng-model="modal.remark"></textarea>
+    </p>
+    <button class="btn btn-success" ng-click="complete()" ng-disabled="ctrl.status('completeBtn', ['processing']) || valid.empty(modal.remark)">
+        <span ng-show="ctrl.status('completeBtn', ['standby'])"><fa i="gavel">&nbsp;确定结束</fa></span>
+        <span ng-show="ctrl.status('completeBtn', ['processing'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></span>
+    </button>
+    <button class="btn btn-default" data-dismiss="modal"><fa i="times-circle">&nbsp;取消</fa></button>
+</modal>
