@@ -3,6 +3,7 @@ package net.ufrog.pisces.server.controllers;
 import net.ufrog.common.Result;
 import net.ufrog.common.app.App;
 import net.ufrog.common.utils.Strings;
+import net.ufrog.pisces.client.PiscesJob;
 import net.ufrog.pisces.server.JobWrapper;
 import net.ufrog.pisces.server.PiscesApp;
 import org.hibernate.service.spi.ServiceException;
