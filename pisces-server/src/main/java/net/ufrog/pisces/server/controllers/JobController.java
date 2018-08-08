@@ -94,7 +94,7 @@ public class JobController implements JobClient {
     }
 
     @Override
-    public JobResponse trigger(@PathVariable("id") String id, String remark) {
+    public JobResponse trigger(@PathVariable("id") String id, @RequestBody String remark) {
         JobWrapper jobWrapper = piscesJobManager.get(id);
         if (jobWrapper != null) {
             piscesJobManager.run(jobWrapper, null, Strings.empty(remark) ? App.message("job.trigger.manual") : Strings.fromUnicode(remark));

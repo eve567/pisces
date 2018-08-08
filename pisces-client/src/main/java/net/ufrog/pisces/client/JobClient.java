@@ -68,9 +68,9 @@ public interface JobClient {
     @ApiOperation(value = "触发任务调度")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", required = true, paramType = "path", value = "任务编号"),
-            @ApiImplicitParam(name = "remark", paramType = "form", value = "备注信息")
+            @ApiImplicitParam(name = "remark", paramType = "body", value = "备注信息")
     })
-    JobResponse trigger(@PathVariable("id") String id, String remark);
+    JobResponse trigger(@PathVariable("id") String id, @RequestBody String remark);
 
     /**
      * 回调任务

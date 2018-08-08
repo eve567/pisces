@@ -188,7 +188,7 @@ public class JobController {
     @GetMapping("/trigger/{jobId}")
     @ResponseBody
     public Result<JobResponse> trigger(@PathVariable("jobId") String jobId, String remark) {
-        JobResponse jobResponse = jobClient.trigger(jobId, remark);
+        JobResponse jobResponse = jobClient.trigger(jobId, Strings.fromUnicode(remark));
         return Result.success(jobResponse, net.ufrog.common.app.App.message("job.trigger.success", jobResponse.getName()));
     }
 
@@ -203,7 +203,7 @@ public class JobController {
     @ResponseBody
     public Result<JobLog> complete(@PathVariable("jobLogId") String jobLogId, String remark) {
         JobCallbackRequest jobCallbackRequest = new JobCallbackRequest(jobLogId);
-        jobCallbackRequest.setRemark(remark);
+        jobCallbackRequest.setRemark(Strings.fromUnicode(remark));
         Response response = jobClient.callback(jobCallbackRequest);
         JobLog jobLog = jobService.findLogById(jobLogId);
 
