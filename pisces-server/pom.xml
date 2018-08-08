@@ -10,7 +10,6 @@
         <version>3.0.0</version>
     </parent>
     <artifactId>pisces-server</artifactId>
-    <packaging>war</packaging>
 
     <dependencies>
         <dependency>
