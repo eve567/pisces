@@ -1,25 +1,24 @@
 package net.ufrog.pisces.console.controllers;
 
-import com.alibaba.fastjson.JSON;
-import jodd.http.HttpRequest;
+import net.ufrog.aries.common.contract.Response;
 import net.ufrog.common.Result;
 import net.ufrog.common.exception.ServiceException;
 import net.ufrog.common.utils.Calendars;
 import net.ufrog.common.utils.Objects;
 import net.ufrog.common.utils.Strings;
-import net.ufrog.pisces.console.PiscesAPIs;
+import net.ufrog.pisces.client.JobClient;
+import net.ufrog.pisces.client.contracts.JobCallbackRequest;
+import net.ufrog.pisces.client.contracts.JobResponse;
 import net.ufrog.pisces.console.beans.JobCtrlWrapper;
 import net.ufrog.pisces.domain.models.*;
 import net.ufrog.pisces.service.AppService;
 import net.ufrog.pisces.service.JobService;
-import net.ufrog.pisces.service.beans.Props;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,15 +39,22 @@ public class JobController {
     /** 任务业务接口 */
     private final JobService jobService;
 
+    /** 任务服务客户端 */
+    private final JobClient jobClient;
+
     /**
      * 构造函数
      *
      * @param appService 应用业务接口
+     * @param jobService 任务业务接口
+     * @param jobClient 任务服务客户端
      */
     @Autowired
-    public JobController(AppService appService, JobService jobService) {
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    public JobController(AppService appService, JobService jobService, JobClient jobClient) {
         this.appService = appService;
         this.jobService = jobService;
+        this.jobClient = jobClient;
     }
 
     /**
@@ -69,8 +75,8 @@ public class JobController {
      */
     @GetMapping("/find_all/{appId}")
     @ResponseBody
-    public List<?> findAll(@PathVariable("appId") String appId) {
-        return PiscesAPIs.findAll(appId);
+    public List<JobResponse> findAll(@PathVariable("appId") String appId) {
+        return jobClient.read(appId).getContent();
     }
 
     /**
@@ -137,10 +143,10 @@ public class JobController {
      */
     @PostMapping("/create")
     @ResponseBody
-    public Result<?> create(@RequestBody Job job) {
+    public Result<JobResponse> create(@RequestBody Job job) {
         Objects.trimStringFields(job);
         jobService.create(job);
-        return Result.success(PiscesAPIs.create(job.getId()).getData(), net.ufrog.common.app.App.message("job.create.success", job.getName()));
+        return Result.success(jobClient.create(job.getId()), net.ufrog.common.app.App.message("job.create.success", job.getName()));
     }
 
     /**
@@ -151,10 +157,10 @@ public class JobController {
      */
     @PutMapping("/update")
     @ResponseBody
-    public Result<?> update(@RequestBody Job job) {
+    public Result<JobResponse> update(@RequestBody Job job) {
         Objects.trimStringFields(job);
         jobService.update(job);
-        return Result.success(PiscesAPIs.update(job.getId()).getData(), net.ufrog.common.app.App.message("job.update.success", job.getName()));
+        return Result.success(jobClient.update(job.getId()), net.ufrog.common.app.App.message("job.update.success", job.getName()));
     }
 
     /**
@@ -165,11 +171,11 @@ public class JobController {
      */
     @PutMapping("/toggle/{jobId}")
     @ResponseBody
-    public Result<?> toggle(@PathVariable("jobId") String jobId) {
+    public Result<JobResponse> toggle(@PathVariable("jobId") String jobId) {
         Job job = jobService.findById(jobId);
         job.setStatus(switchStatus(Job.Status.RUNNING, Job.Status.PAUSED, job.getStatus()));
         jobService.update(job);
-        return Result.success(PiscesAPIs.update(jobId).getData(), net.ufrog.common.app.App.message("job.toggle.success", job.getName(), job.getStatusName()));
+        return Result.success(jobClient.update(job.getId()), net.ufrog.common.app.App.message("job.toggle.success", job.getName(), job.getStatusName()));
     }
 
     /**
@@ -181,8 +187,9 @@ public class JobController {
      */
     @GetMapping("/trigger/{jobId}")
     @ResponseBody
-    public Result<?> trigger(@PathVariable("jobId") String jobId, String remark) {
-        return PiscesAPIs.trigger(jobId, remark);
+    public Result<JobResponse> trigger(@PathVariable("jobId") String jobId, String remark) {
+        JobResponse jobResponse = jobClient.trigger(jobId, remark);
+        return Result.success(jobResponse, net.ufrog.common.app.App.message("job.trigger.success", jobResponse.getName()));
     }
 
     /**
@@ -195,13 +202,12 @@ public class JobController {
     @GetMapping("/complete/{jobLogId}")
     @ResponseBody
     public Result<JobLog> complete(@PathVariable("jobLogId") String jobLogId, String remark) {
-        Result<?> result = PiscesAPIs.callback(jobLogId, remark);
+        JobCallbackRequest jobCallbackRequest = new JobCallbackRequest(jobLogId);
+        jobCallbackRequest.setRemark(remark);
+        Response response = jobClient.callback(jobCallbackRequest);
         JobLog jobLog = jobService.findLogById(jobLogId);
 
-        if (result.success()) {
-            return Result.success(jobLog, net.ufrog.common.app.App.message("job.complete.success"));
-        }
-        return Result.create(result.getType(), jobLog, result.getFirstMessage());
+        return response.isSuccess() ? Result.success(jobLog, net.ufrog.common.app.App.message("job.complete.success")) : Result.failure(jobLog, response.getMessage());
     }
 
     /**
@@ -309,6 +315,7 @@ public class JobController {
      * @param status 当前状态
      * @return 切换后状态
      */
+    @SuppressWarnings("SameParameterValue")
     private String switchStatus(String status1, String status2, String status) {
         if (Strings.equals(status1, status)) {
             return status2;

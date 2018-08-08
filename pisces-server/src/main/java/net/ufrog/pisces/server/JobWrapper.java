@@ -52,7 +52,7 @@ public class JobWrapper implements Serializable {
      * @param lJobCtrl 任务控制列表
      * @param lJobParam 任务参数列表
      */
-    public JobWrapper(Job job, JobDetail jobDetail, Trigger trigger, List<JobCtrl> lJobCtrl, List<JobParam> lJobParam) {
+    JobWrapper(Job job, JobDetail jobDetail, Trigger trigger, List<JobCtrl> lJobCtrl, List<JobParam> lJobParam) {
         this();
         this.job = job;
         this.jobDetail = jobDetail;
@@ -232,7 +232,7 @@ public class JobWrapper implements Serializable {
      * @param type 类型
      * @return 任务控制列表
      */
-    public List<JobCtrl> getJobCtrls(String type) {
+    List<JobCtrl> getJobCtrls(String type) {
         List<JobCtrl> lJobCtrl = mlJobCtrl.get(type);
         return lJobCtrl == null ? Collections.emptyList() : lJobCtrl;
     }
@@ -242,7 +242,7 @@ public class JobWrapper implements Serializable {
      *
      * @return 任务参数映射
      */
-    public Map<String, String> getJobParams() {
+    Map<String, String> getJobParams() {
         return mJobParam;
     }
 

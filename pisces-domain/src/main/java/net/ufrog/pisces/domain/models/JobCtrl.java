@@ -1,5 +1,6 @@
 package net.ufrog.pisces.domain.models;
 
+import net.ufrog.aries.common.jpa.Model;
 import net.ufrog.common.dict.Dicts;
 
 /**
@@ -9,6 +10,7 @@ import net.ufrog.common.dict.Dicts;
  * @version 0.1, 2017-09-06
  * @since 0.1
  */
+@java.lang.SuppressWarnings("unused")
 @javax.persistence.Entity
 @javax.persistence.Table(name = "pis_job_ctrl")
 public class JobCtrl extends Model {

@@ -4,6 +4,8 @@ import net.ufrog.pisces.domain.models.App;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * 应用仓库
  *
@@ -20,5 +22,5 @@ public interface AppRepository extends JpaRepository<App, String> {
      * @param leoAppId 应用编号
      * @return 应用对象
      */
-    App findByLeoAppId(String leoAppId);
+    Optional<App> findByLeoAppId(String leoAppId);
 }

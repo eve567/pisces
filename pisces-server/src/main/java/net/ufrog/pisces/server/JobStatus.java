@@ -43,7 +43,7 @@ public class JobStatus implements Serializable {
      * @param id 编号
      * @param name 名称
      */
-    public JobStatus(String id, String name) {
+    JobStatus(String id, String name) {
         this();
         this.id = id;
         this.name = name;
@@ -63,7 +63,7 @@ public class JobStatus implements Serializable {
      *
      * @return 名称
      */
-    public String getName() {
+    String getName() {
         return name;
     }
 
@@ -72,7 +72,7 @@ public class JobStatus implements Serializable {
      *
      * @param jobLog 任务日志
      */
-    public synchronized void addHangJob(JobLog jobLog) {
+    synchronized void addHangJob(JobLog jobLog) {
         if (!mHangJob.containsKey(jobLog.getJobId())) {
             mHangJob.put(jobLog.getJobId(), jobLog);
         }
@@ -83,7 +83,7 @@ public class JobStatus implements Serializable {
      *
      * @return 累加后的运行数量
      */
-    public Integer incr() {
+    Integer incr() {
         return total.incrementAndGet();
     }
 
@@ -93,7 +93,7 @@ public class JobStatus implements Serializable {
      *
      * @return 是否已经调启后续任务
      */
-    public Integer decr() {
+    Integer decr() {
         return total.decrementAndGet();
     }
 
@@ -102,7 +102,7 @@ public class JobStatus implements Serializable {
      *
      * @return 挂起任务集合
      */
-    public Collection<JobLog> getHangJobs() {
+    Collection<JobLog> getHangJobs() {
         return mHangJob.values();
     }
 }

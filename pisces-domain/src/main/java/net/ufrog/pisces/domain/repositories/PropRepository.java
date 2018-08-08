@@ -4,6 +4,8 @@ import net.ufrog.pisces.domain.models.Prop;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * 属性仓库
  *
@@ -20,5 +22,5 @@ public interface PropRepository extends JpaRepository<Prop, String> {
      * @param code 代码
      * @return 属性对象
      */
-    Prop findByCode(String code);
+    Optional<Prop> findByCode(String code);
 }

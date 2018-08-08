@@ -7,6 +7,7 @@ package net.ufrog.pisces.service.beans;
  * @version 0.1, 2017-09-14
  * @since 0.1
  */
+@SuppressWarnings({"WeakerAccess", "UnnecessaryLocalVariable"})
 public class Props {
 
     /** 服务端地址 */ public static final String SERVER_URL = "server_url";

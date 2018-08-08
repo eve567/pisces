@@ -1,5 +1,6 @@
 package net.ufrog.pisces.service.impls;
 
+import net.ufrog.common.data.exception.DataNotFoundException;
 import net.ufrog.common.utils.Objects;
 import net.ufrog.common.utils.Strings;
 import net.ufrog.pisces.domain.models.App;
@@ -37,12 +38,12 @@ public class AppServiceImpl implements AppService {
 
     @Override
     public App findById(String id) {
-        return appRepository.findOne(id);
+        return appRepository.findById(id).orElse(null);
     }
 
     @Override
     public App findByLeoAppId(String leoAppId) {
-        return appRepository.findByLeoAppId(leoAppId);
+        return appRepository.findByLeoAppId(leoAppId).orElse(null);
     }
 
     @Override
@@ -60,8 +61,9 @@ public class AppServiceImpl implements AppService {
     @Override
     @Transactional
     public App update(App app) {
-        App oApp = appRepository.findOne(app.getId());
-        Objects.copyProperties(oApp, app, Boolean.TRUE, "creator", "createTime", "updater", "updateTime");
-        return appRepository.save(oApp);
+        return appRepository.findById(app.getId()).map(oApp -> {
+            Objects.copyProperties(oApp, app, Boolean.TRUE, "id", "creator", "createTime", "updater", "updateTime");
+            return appRepository.save(oApp);
+        }).orElseThrow(() -> new DataNotFoundException(App.class, "id", app.getId()));
     }
 }

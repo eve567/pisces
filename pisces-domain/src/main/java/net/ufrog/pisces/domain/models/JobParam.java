@@ -1,5 +1,7 @@
 package net.ufrog.pisces.domain.models;
 
+import net.ufrog.aries.common.jpa.Model;
+
 /**
  * 任务参数模型
  *
@@ -7,6 +9,7 @@ package net.ufrog.pisces.domain.models;
  * @version 0.1, 2017-09-06
  * @since 0.1
  */
+@java.lang.SuppressWarnings("unused")
 @javax.persistence.Entity
 @javax.persistence.Table(name = "pis_job_param")
 public class JobParam extends Model {

@@ -1,25 +1,17 @@
 package net.ufrog.pisces.job.jobs;
 
-import com.alibaba.fastjson.JSON;
-import jodd.http.HttpRequest;
-import jodd.http.HttpResponse;
-import net.ufrog.common.Logger;
-import net.ufrog.common.exception.ServiceException;
-import net.ufrog.common.utils.Objects;
-import net.ufrog.common.utils.Strings;
+import net.ufrog.aries.common.contract.Response;
 import net.ufrog.pisces.client.PiscesJob;
-import net.ufrog.pisces.client.PiscesJobData;
-import net.ufrog.pisces.client.jee.PiscesServlet;
+import net.ufrog.pisces.client.contracts.JobCallRequest;
+import net.ufrog.pisces.client.contracts.JobCallbackRequest;
 import net.ufrog.pisces.domain.models.App;
-import net.ufrog.pisces.domain.models.JobLog;
 import net.ufrog.pisces.service.AppService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 健康检查任务
@@ -34,50 +26,55 @@ public class HealthCheckJob implements PiscesJob {
     /** 应用业务接口 */
     private final AppService appService;
 
+    /** rest template */
+    private final RestTemplate restTemplate;
+
     /**
      * 构造函数
      *
      * @param appService 应用业务接口
+     * @param restTemplate rest template
      */
-    @Autowired
-    public HealthCheckJob(AppService appService) {
+    public HealthCheckJob(AppService appService, RestTemplate restTemplate) {
         this.appService = appService;
+        this.restTemplate = restTemplate;
     }
 
     @Override
-    public void run(Date date, Map<String, String> args, PiscesJobData jobData) {
-        List<AppChecker> lAppChecker = new ArrayList<>();
+    public void run(JobCallRequest jobCallRequest, JobCallbackRequest jobCallbackRequest) {
         List<App> lApp = appService.findAll();
+        List<AppResponse> lAppResponse = Collections.synchronizedList(new ArrayList<>());
 
-        // 检查应用是否健康
-        lApp.forEach(app -> {
+        // 检查所有应用状态
+        lApp.parallelStream().forEach(app -> {
             try {
-                Map<String, Object> mArg = Objects.map(PiscesServlet.PARAM_TYPE, PiscesServlet.TYPE_CHECK_HEALTH);
-                HttpResponse resp = HttpRequest.post(app.getUrl()).body(JSON.toJSONString(mArg)).charset("utf-8").send();
-                if (!Strings.equals("ok", resp.bodyText())) {
-                    lAppChecker.add(new AppChecker(app, resp.statusPhrase()));
+                Response response = restTemplate.getForObject(app.getUrl() + "/check_health", Response.class);
+                if (response == null || !response.isSuccess()) {
+                    lAppResponse.add(new AppResponse(app, response == null ? net.ufrog.common.app.App.message("health.check.unbeknown") : response.getMessage()));
                 }
             } catch (Throwable e) {
-                lAppChecker.add(new AppChecker(app, e.getMessage()));
+                lAppResponse.add(new AppResponse(app, e.getMessage()));
             }
         });
 
-        // 判断并处理结果
-        if (lAppChecker.size() > 0) {
-            jobData.setTemplate("health_check");
-            jobData.setStatus(PiscesJobData.Status.FAILURE);
-            jobData.putArg("total", lApp.size());
-            jobData.putArg("total_error", lAppChecker.size());
-            jobData.putArg("errors", lAppChecker);
+        // 判断是否有检查失败的结果
+        if (lAppResponse.size() > 0) {
+            jobCallbackRequest.setTemplate("health_check");
+            jobCallbackRequest.setStatus(JobCallbackRequest.Status.FAILURE);
+            jobCallbackRequest.putArg("total", lApp.size());
+            jobCallbackRequest.putArg("total_error", lAppResponse.size());
+            jobCallbackRequest.putArg("errors", lAppResponse);
         }
     }
 
     /**
+     * 健康检查任务
+     *
      * @author ultrafrog, ufrog.net@gmail.com
-     * @version 0.1, 2017-09-18
-     * @since 0.1
+     * @version 3.0.0, 2018-07-18
+     * @since 3.0.0
      */
-    public static class AppChecker {
+    public static class AppResponse {
 
         /** 应用对象 */
         private App app;
@@ -86,7 +83,7 @@ public class HealthCheckJob implements PiscesJob {
         private String message;
 
         /** 构造函数 */
-        private AppChecker() {}
+        private AppResponse() {}
 
         /**
          * 构造函数
@@ -94,7 +91,7 @@ public class HealthCheckJob implements PiscesJob {
          * @param app 应用对象
          * @param message 消息
          */
-        public AppChecker(App app, String message) {
+        AppResponse(App app, String message) {
             this();
             this.app = app;
             this.message = message;
@@ -110,12 +107,30 @@ public class HealthCheckJob implements PiscesJob {
         }
 
         /**
+         * 设置应用对象
+         *
+         * @param app 应用对象
+         */
+        public void setApp(App app) {
+            this.app = app;
+        }
+
+        /**
          * 读取消息
          *
          * @return 消息
          */
         public String getMessage() {
             return message;
+        }
+
+        /**
+         * 设置消息
+         *
+         * @param message 消息
+         */
+        public void setMessage(String message) {
+            this.message = message;
         }
     }
 }

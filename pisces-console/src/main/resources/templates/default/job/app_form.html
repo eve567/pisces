@@ -44,10 +44,10 @@
             <div class="form-group margin-bottom-zero">
                 <div class="col-sm-offset-1 col-sm-11">
                     <button class="btn btn-success" ng-disabled="appFn.disabledSaveBtn()">
-                        <span ng-show="ctrl.status('saveBtn', ['standby'])"><fa i="floppy-o">&nbsp;${app.msg('common.op.save')}</fa></span>
-                        <span ng-show="ctrl.status('saveBtn', ['processing'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></span>
+                        <span ng-show="ctrl.status('saveBtn', ['standby'])"><fa i="floppy-o">&nbsp;${_M('common.op.save')}</fa></span>
+                        <span ng-show="ctrl.status('saveBtn', ['processing'])"><fa i="spinner spin">&nbsp;${_M('common.processing')}</fa></span>
                     </button>
-                    <button type="button" class="btn btn-default" ng-click="jobFn.cancel()" ng-if="!valid.empty(app.id)"><fa i="times-circle">&nbsp;${app.msg('common.op.cancel')}</fa></button>
+                    <button type="button" class="btn btn-default" ng-click="jobFn.cancel()" ng-if="!valid.empty(app.id)"><fa i="times-circle">&nbsp;${_M('common.op.cancel')}</fa></button>
                 </div>
             </div>
         </form>

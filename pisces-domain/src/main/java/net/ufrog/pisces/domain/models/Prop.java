@@ -1,5 +1,7 @@
 package net.ufrog.pisces.domain.models;
 
+import net.ufrog.aries.common.jpa.Model;
+
 /**
  * 属性模型
  *
@@ -7,6 +9,7 @@ package net.ufrog.pisces.domain.models;
  * @version 0.1, 2017-09-06
  * @since 0.1
  */
+@java.lang.SuppressWarnings("unused")
 @javax.persistence.Entity
 @javax.persistence.Table(name = "pis_prop")
 public class Prop extends Model {

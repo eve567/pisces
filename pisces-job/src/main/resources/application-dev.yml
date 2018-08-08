@@ -1,0 +1,52 @@
+server:
+  port: ${config.port:8082}
+spring:
+  application:
+    name: pisces-job
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.111.4.49/ufrog_pisces_dev?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false
+    username: dev
+    password: mMZc%j13l
+  jpa:
+    database: mysql
+    showSql: true
+logging:
+  level:
+    root: info
+    net.ufrog: debug
+eureka:
+  instance:
+    preferIpAddress: true
+    leaseExpirationDurationInSeconds: 15
+    leaseRenewalIntervalInSeconds: 5
+  client:
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+      defaultZone: http://10.111.4.49:8002/eureka/,http://10.111.4.49:8003/eureka/,http://10.111.4.49:8001/eureka/
+ufrog:
+  app:
+    enabled: true
+    secret: zbh7DN0sLZYI5d6L0NzCwklr0NtZExi3RJ6ERKrjIzYuGz6WZYjplu2J0tKqEA8T
+    messages: classpath:messages-domain,classpath:messages-service,classpath:messages
+    logger:
+      caller: true
+  pattern:
+    uuid: "[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}"
+    cellphone: "1[3578][0-9]{9}"
+    email: "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[a-zA-Z0-9](?:[\\w-]*[\\w])?"
+  cache:
+    default:
+      duration: 4h
+      prefix: pis_
+  pisces:
+    enabled: true
+  client:
+    resultCodeClass: net.ufrog.pisces.client.ResultCode
+  jetx:
+    config:
+      jetx.import.classes: "net.ufrog.common.app.App, net.ufrog.common.spring.app.SpringWebApp, net.ufrog.pisces.domain.models.*, net.ufrog.pisces.service.beans.**, net.ufrog.pisces.job.**"
+      jetx.trim.directive.comments: "true"
+      jetx.template.loaders: "$loader"
+      $loader: "jetbrick.template.loader.ClasspathResourceLoader"
+      $loader.reloadable: "true"

@@ -55,8 +55,8 @@
                 <!-- a href="#" class="link-group-item" ng-if="job.status === '00'">移除</a -->
             </td>
         </tr>
-        <tr ng-if="ctrl.status('grid', ['loaded']) && valid.empty(jobs|filter:jobFilter)"><td class="text-warning" col-span><fa i="exclamation-triangle">&nbsp;${app.msg('common.empty')}</fa></td></tr>
-        <tr ng-if="ctrl.status('grid', ['loading'])"><td col-span><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></td></tr>
+        <tr ng-if="ctrl.status('grid', ['loaded']) && valid.empty(jobs|filter:jobFilter)"><td class="text-warning" col-span><fa i="exclamation-triangle">&nbsp;${_M('common.empty')}</fa></td></tr>
+        <tr ng-if="ctrl.status('grid', ['loading'])"><td col-span><fa i="spinner spin">&nbsp;${_M('common.processing')}</fa></td></tr>
         </tbody>
     </table>
 </div>

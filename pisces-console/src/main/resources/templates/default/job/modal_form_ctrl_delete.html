@@ -1,8 +1,8 @@
 <modal id="deleteCtrlConfirmModal" title="确认删除控制？">
     <p class="text-danger margin-bottom-zero"><fa i="info-circle">&nbsp;是否确认删除控制「<span ng-bind="current.jobCtrl.typeName"></span> - <span ng-bind="current.jobCtrl.relatedName"></span>」？</fa></p>
     <button class="btn btn-danger" ng-click="deleteCtrl()" ng-disabled="ctrl.status('deleteBtn', ['processing'])">
-        <span ng-show="ctrl.status('deleteBtn', ['standby'])"><fa i="times-circle">&nbsp;${app.msg('common.op.delete')}</fa></span>
-        <span ng-show="ctrl.status('deleteBtn', ['processing'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></span>
+        <span ng-show="ctrl.status('deleteBtn', ['standby'])"><fa i="times-circle">&nbsp;${_M('common.op.delete')}</fa></span>
+        <span ng-show="ctrl.status('deleteBtn', ['processing'])"><fa i="spinner spin">&nbsp;${_M('common.processing')}</fa></span>
     </button>
-    <button class="btn btn-default" data-dismiss="modal"><fa i="times-circle">&nbsp;${app.msg('common.op.cancel')}</fa></button>
+    <button class="btn btn-default" data-dismiss="modal"><fa i="times-circle">&nbsp;${_M('common.op.cancel')}</fa></button>
 </modal>

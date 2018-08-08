@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.ufrog</groupId>
         <artifactId>pisces-parent</artifactId>
-        <version>2.0.0</version>
+        <version>3.0.0</version>
     </parent>
     <artifactId>pisces-service</artifactId>
 
@@ -15,34 +15,10 @@
         <dependency>
             <groupId>net.ufrog</groupId>
             <artifactId>pisces-domain</artifactId>
-            <version>${version.this}</version>
         </dependency>
         <dependency>
             <groupId>net.ufrog</groupId>
-            <artifactId>pisces-client</artifactId>
-            <version>${version.this}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.ufrog</groupId>
-            <artifactId>leo-client</artifactId>
-            <version>${version.ufrog.leo}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>${version.druid}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.subchen</groupId>
-            <artifactId>jetbrick-template-springmvc</artifactId>
-            <version>${version.jetbrick}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jsp-api</artifactId>
-            <version>${version.tomcat}</version>
-            <scope>provided</scope>
+            <artifactId>ufrog-common-spring</artifactId>
         </dependency>
     </dependencies>
 </project>

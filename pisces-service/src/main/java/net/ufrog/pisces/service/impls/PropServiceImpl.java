@@ -1,6 +1,7 @@
 package net.ufrog.pisces.service.impls;
 
 import net.ufrog.common.utils.Strings;
+import net.ufrog.pisces.domain.Models;
 import net.ufrog.pisces.domain.models.Prop;
 import net.ufrog.pisces.domain.repositories.PropRepository;
 import net.ufrog.pisces.service.PropService;
@@ -42,11 +43,8 @@ public class PropServiceImpl implements PropService {
     @Override
     @Transactional
     public Prop save(String code, String value) {
-        Prop prop = propRepository.findByCode(code);
-        if (prop == null) {
-            prop = new Prop();
-            prop.setCode(code);
-        } if (!Strings.equals(prop.getValue(), value)) {
+        Prop prop = propRepository.findByCode(code).orElseGet(() -> Models.createProp(code));
+        if (!Strings.equals(prop.getValue(), value)) {
             prop.setValue(value);
             propRepository.save(prop);
         }

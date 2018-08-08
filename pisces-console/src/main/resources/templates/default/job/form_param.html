@@ -21,8 +21,8 @@
                     <a href="#" class="link-group-item" ng-click="popDeleteConfirmModal(jp)">删除</a>
                 </td>
             </tr>
-            <tr ng-if="ctrl.status('grid', ['loaded']) && valid.empty(jobParams)"><td class="text-warning" col-span><fa i="exclamation-triangle">&nbsp;${app.msg('common.empty')}</fa></td></tr>
-            <tr ng-if="ctrl.status('grid', ['loading'])"><td col-span><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></td></tr>
+            <tr ng-if="ctrl.status('grid', ['loaded']) && valid.empty(jobParams)"><td class="text-warning" col-span><fa i="exclamation-triangle">&nbsp;${_M('common.empty')}</fa></td></tr>
+            <tr ng-if="ctrl.status('grid', ['loading'])"><td col-span><fa i="spinner spin">&nbsp;${_M('common.processing')}</fa></td></tr>
             </tbody>
         </table>
         <div class="panel-body">
@@ -40,10 +40,10 @@
                 <div class="form-group margin-bottom-zero">
                     <div class="col-sm-12">
                         <button class="btn btn-success" ng-disabled="disabledSaveBtn()">
-                            <span ng-show="ctrl.status('saveBtn', ['standby'])"><fa i="floppy-o">&nbsp;${app.msg('common.op.add')}</fa></span>
-                            <span ng-show="ctrl.status('saveBtn', ['processing'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></span>
+                            <span ng-show="ctrl.status('saveBtn', ['standby'])"><fa i="floppy-o">&nbsp;${_M('common.op.add')}</fa></span>
+                            <span ng-show="ctrl.status('saveBtn', ['processing'])"><fa i="spinner spin">&nbsp;${_M('common.processing')}</fa></span>
                         </button>
-                        <button type="button" class="btn btn-default" ng-click="jobFn.cancel()"><fa i="times-circle">&nbsp;${app.msg('common.op.cancel')}</fa></button>
+                        <button type="button" class="btn btn-default" ng-click="jobFn.cancel()"><fa i="times-circle">&nbsp;${_M('common.op.cancel')}</fa></button>
                     </div>
                 </div>
             </form>

@@ -1,5 +1,6 @@
 package net.ufrog.pisces.service.impls;
 
+import net.ufrog.common.data.exception.DataNotFoundException;
 import net.ufrog.common.data.spring.Domains;
 import net.ufrog.common.utils.Objects;
 import net.ufrog.common.utils.Strings;
@@ -53,12 +54,7 @@ public class JobServiceImpl implements JobService {
      * @param jobParamRepository 任务参数仓库
      */
     @Autowired
-    public JobServiceImpl(
-            JobRepository jobRepository,
-            JobCtrlRepository jobCtrlRepository,
-            JobLogRepository jobLogRepository,
-            JobLogDetailRepository jobLogDetailRepository,
-            JobParamRepository jobParamRepository) {
+    public JobServiceImpl(JobRepository jobRepository, JobCtrlRepository jobCtrlRepository, JobLogRepository jobLogRepository, JobLogDetailRepository jobLogDetailRepository, JobParamRepository jobParamRepository) {
         this.jobRepository = jobRepository;
         this.jobCtrlRepository = jobCtrlRepository;
         this.jobLogRepository = jobLogRepository;
@@ -66,9 +62,10 @@ public class JobServiceImpl implements JobService {
         this.jobParamRepository = jobParamRepository;
     }
 
+
     @Override
     public Job findById(String id) {
-        return jobRepository.findOne(id);
+        return jobRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -93,7 +90,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public JobLog findLogById(String jobLogId) {
-        return jobLogRepository.findOne(jobLogId);
+        return jobLogRepository.findById(jobLogId).orElse(null);
     }
 
     @Override
@@ -116,9 +113,10 @@ public class JobServiceImpl implements JobService {
     @Override
     @Transactional
     public Job update(Job job) {
-        Job oJob = jobRepository.findOne(job.getId());
-        Objects.copyProperties(oJob, job, Boolean.TRUE, "id", "creator", "createTime", "updater", "updateTime");
-        return jobRepository.save(oJob);
+        return jobRepository.findById(job.getId()).map(oJob -> {
+            Objects.copyProperties(oJob, job, Boolean.TRUE, "id", "creator", "createTime", "updater", "updateTime");
+            return jobRepository.save(oJob);
+        }).orElseThrow(() -> new DataNotFoundException(Job.class, "id", job.getId()));
     }
 
     @Override
@@ -130,9 +128,10 @@ public class JobServiceImpl implements JobService {
     @Override
     @Transactional
     public JobParam deleteParam(String jobParamId) {
-        JobParam jobParam = jobParamRepository.findOne(jobParamId);
-        jobParamRepository.delete(jobParam);
-        return jobParam;
+        return jobParamRepository.findById(jobParamId).map(jobParam -> {
+            jobParamRepository.delete(jobParam);
+            return jobParam;
+        }).orElseThrow(() -> new DataNotFoundException(JobParam.class, "id", jobParamId));
     }
 
     @Override
@@ -144,15 +143,16 @@ public class JobServiceImpl implements JobService {
     @Override
     @Transactional
     public JobCtrl deleteCtrl(String jobCtrlId) {
-        JobCtrl jobCtrl = jobCtrlRepository.findOne(jobCtrlId);
-        jobCtrlRepository.delete(jobCtrl);
-        return jobCtrl;
+        return jobCtrlRepository.findById(jobCtrlId).map(jobCtrl -> {
+            jobCtrlRepository.delete(jobCtrl);
+            return jobCtrl;
+        }).orElseThrow(() -> new DataNotFoundException(JobCtrl.class, "id", jobCtrlId));
     }
 
     @Override
     @Transactional
     public JobLog createLog(String jobId, String remark) {
-        JobLog jobLog = jobLogRepository.save(Models.newJobLog(jobId, remark));
+        JobLog jobLog = jobLogRepository.save(Models.createJobLog(jobId, remark));
         createLogDetail(jobLog.getId(), remark, JobLogDetail.Type.TRIGGER);
         return jobLog;
     }
@@ -160,16 +160,16 @@ public class JobServiceImpl implements JobService {
     @Override
     @Transactional
     public JobLog updateLog(String jobLogId, String status, String email, String cellphone) {
-        JobLog jobLog = jobLogRepository.findOne(jobLogId);
-
-        jobLog.setStatus(status);
-        jobLog.setDatetimeEnd(Strings.in(status, JobLog.Status.SUCCESS, JobLog.Status.FAILURE, JobLog.Status.BLOCK) ? new Date() : null);
-        return jobLogRepository.save(jobLog);
+        return jobLogRepository.findById(jobLogId).map(jobLog -> {
+            jobLog.setStatus(status);
+            jobLog.setDatetimeEnd(Strings.in(status, JobLog.Status.SUCCESS, JobLog.Status.FAILURE, JobLog.Status.BLOCK) ? new Date() : null);
+            return jobLogRepository.save(jobLog);
+        }).orElseThrow(() -> new DataNotFoundException(JobLog.class, "id", jobLogId));
     }
 
     @Override
     @Transactional
     public JobLogDetail createLogDetail(String jobLogId, String remark, String type) {
-        return jobLogDetailRepository.save(Models.newJobLogDetail(jobLogId, remark, type));
+        return jobLogDetailRepository.save(Models.createJobLogDetail(jobLogId, remark, type));
     }
 }

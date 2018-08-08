@@ -1,0 +1,65 @@
+server:
+  port: ${config.port:8080}
+spring:
+  application:
+    name: pisces-console
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.111.4.49/ufrog_pisces_dev?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false
+    username: dev
+    password: mMZc%j13l
+  jpa:
+    database: mysql
+    showSql: true
+  jetbrick:
+    template:
+      enabled: true
+      charset: utf-8
+      content-type: text/html
+      prefix: templates/default/
+      suffix: .html
+      config:
+        jetx.autoscan.packages: net.ufrog.common.jetbrick
+        jetx.import.classes: net.ufrog.common.app.App, net.ufrog.common.spring.app.SpringWebApp, net.ufrog.pisces.domain.models.*, net.ufrog.pisces.service.beans.**
+        jetx.trim.directive.comments: "true"
+        jetx.template.loaders: $loader
+        $loader: jetbrick.template.loader.ClasspathResourceLoader
+        $loader.reloadable: "true"
+logging:
+  level:
+    root: info
+eureka:
+  instance:
+    preferIpAddress: true
+    leaseExpirationDurationInSeconds: 15
+    leaseRenewalIntervalInSeconds: 5
+  client:
+    registerWithEureka: false
+    serviceUrl:
+      defaultZone: http://10.111.4.49:8002/eureka/,http://10.111.4.49:8003/eureka/,http://10.111.4.49:8001/eureka/
+#feign.hystrix.enabled: true
+#hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 5000
+ufrog:
+  app:
+    secret: zbh7DN0sLZYI5d6L0NzCwklr0NtZExi3RJ6ERKrjIzYuGz6WZYjplu2J0tKqEA8T
+    messages: classpath:messages-domain,classpath:messages-service,classpath:messages
+    logger:
+      caller: true
+  pattern:
+    uuid: "[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}"
+    cellphone: "1[3578][0-9]{9}"
+    email: "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[a-zA-Z0-9](?:[\\w-]*[\\w])?"
+  path:
+    resource:
+      common: //10.111.4.49:800/nginx
+      host: //10.111.4.49:800/nginx/pisces
+  cache:
+    default:
+      duration: 4h
+      prefix: pis_
+  leo:
+    enabled: true
+    gateway: http://10.111.4.49:8103
+    host: http://10.111.4.49:8100
+    appId: a71b0ef1-33da-41cb-aa73-c80be85ec603
+    appSecret: n0k5MXLlgDkeBEgckk9mBX23xMBXbwXGr1JmqGyzEMvfvRhq186qiIgJr8peeQPr

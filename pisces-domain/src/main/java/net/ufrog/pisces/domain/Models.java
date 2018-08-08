@@ -2,6 +2,7 @@ package net.ufrog.pisces.domain;
 
 import net.ufrog.pisces.domain.models.JobLog;
 import net.ufrog.pisces.domain.models.JobLogDetail;
+import net.ufrog.pisces.domain.models.Prop;
 
 import java.util.Date;
 
@@ -24,7 +25,7 @@ public class Models {
      * @param remark 备注
      * @return 任务日志实例
      */
-    public static JobLog newJobLog(String jobId, String remark) {
+    public static JobLog createJobLog(String jobId, String remark) {
         JobLog jobLog = new JobLog();
 
         jobLog.setDatetimeBegin(new Date());
@@ -42,7 +43,7 @@ public class Models {
      * @param type 类型
      * @return 任务日志明细
      */
-    public static JobLogDetail newJobLogDetail(String jobLogId, String remark, String type) {
+    public static JobLogDetail createJobLogDetail(String jobLogId, String remark, String type) {
         JobLogDetail jobLogDetail = new JobLogDetail();
 
         jobLogDetail.setDatetime(new Date());
@@ -50,5 +51,17 @@ public class Models {
         jobLogDetail.setType(type);
         jobLogDetail.setJobLogId(jobLogId);
         return jobLogDetail;
+    }
+
+    /**
+     * 创建属性模型实例
+     *
+     * @param code 代码
+     * @return 属性模型实例
+     */
+    public static Prop createProp(String code) {
+        Prop prop = new Prop();
+        prop.setCode(code);
+        return prop;
     }
 }

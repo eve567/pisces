@@ -15,19 +15,32 @@ import java.io.IOException;
  */
 public class PiscesAppFilter implements Filter {
 
+    /** 任务管理器 */
+    private final PiscesJobManager piscesJobManager;
+
+    /**
+     * 构造函数
+     *
+     * @param piscesJobManager 任务管理器
+     */
+    PiscesAppFilter(PiscesJobManager piscesJobManager) {
+        this.piscesJobManager = piscesJobManager;
+    }
+
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
         Logger.info("initialize pisces application filter.");
         PiscesApp.initialize(filterConfig.getServletContext());
+        piscesJobManager.init();
         Logger.info("pisces application filter is running...");
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest req = HttpServletRequest.class.cast(request);
-        HttpServletResponse resp = HttpServletResponse.class.cast(response);
+        HttpServletRequest httpServletRequest = HttpServletRequest.class.cast(request);
+        HttpServletResponse httpServletResponse = HttpServletResponse.class.cast(response);
 
-        req.setAttribute(WebAppFilter.PARAM_KEY, PiscesApp.create(req, resp));
+        httpServletRequest.setAttribute(WebAppFilter.PARAM_KEY, PiscesApp.create(httpServletRequest, httpServletResponse));
         chain.doFilter(request, response);
     }
 

@@ -46,7 +46,7 @@
                         <span>明细</span>
                         <div class="popover-body">
                             <ul class="timeline">
-                                <li class="ng-fade" ng-if="ctrl.status(log.id, ['loading'])"><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></li>
+                                <li class="ng-fade" ng-if="ctrl.status(log.id, ['loading'])"><fa i="spinner spin">&nbsp;${_M('common.processing')}</fa></li>
                                 <li class="ng-fade" ng-if="ctrl.status(log.id, ['loaded'])" ng-repeat="ld in logDetails[log.id]">
                                     <strong ng-bind="ld.datetime|date:'yyyy-MM-dd HH:mm:ss'"></strong><br>
                                     <strong ng-bind="ld.typeName" ng-class="{'text-success': ld.type === '10', 'text-danger': (ld.type === '20' || ld.type === '21'), 'text-info': (ld.type !== '10' && ld.type !== '20' && ld.type !== '21')}"></strong>
@@ -58,8 +58,8 @@
                     </a>
                 </td>
             </tr>
-            <tr ng-if="ctrl.status('logGrid', ['loaded']) && valid.empty(logs)"><td class="text-warning" col-span><fa i="exclamation-triangle">&nbsp;${app.msg('common.empty')}</fa></td></tr>
-            <tr ng-if="ctrl.status('logGrid', ['loading'])"><td col-span><fa i="spinner spin">&nbsp;${app.msg('common.processing')}</fa></td></tr>
+            <tr ng-if="ctrl.status('logGrid', ['loaded']) && valid.empty(logs)"><td class="text-warning" col-span><fa i="exclamation-triangle">&nbsp;${_M('common.empty')}</fa></td></tr>
+            <tr ng-if="ctrl.status('logGrid', ['loading'])"><td col-span><fa i="spinner spin">&nbsp;${_M('common.processing')}</fa></td></tr>
             </tbody>
         </table>
     </div>

@@ -16,13 +16,13 @@
         </tr>
         </thead>
         <tbody>
-        <!-- #for(net.ufrog.pisces.job.jobs.HealthCheckJob.AppChecker ac: errors) -->
-        <tr #if(for.odd) class="odd" #end >
+        #for(net.ufrog.pisces.job.jobs.HealthCheckJob.AppResponse ac: errors)
+        <tr #if(for.odd) class="odd" #end>
             <td>${ac.app.name}</td>
             <td>${ac.app.url}</td>
             <td>${ac.message}</td>
         </tr>
-        <!-- #end -->
+        #end
         </tbody>
     </table>
 </div>

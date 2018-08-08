@@ -1,0 +1,5 @@
+spring:
+  cloud:
+    config:
+      name: pisces-console
+      profile: ${config.profile}

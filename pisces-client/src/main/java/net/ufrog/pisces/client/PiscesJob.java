@@ -1,5 +1,8 @@
 package net.ufrog.pisces.client;
 
+import net.ufrog.pisces.client.contracts.JobCallRequest;
+import net.ufrog.pisces.client.contracts.JobCallbackRequest;
+
 import java.util.Date;
 import java.util.Map;
 
@@ -15,9 +18,8 @@ public interface PiscesJob {
     /**
      * 执行任务
      *
-     * @param date 日切
-     * @param args 参数
-     * @param jobData 任务数据
+     * @param jobCallRequest 任务调用请求
+     * @param jobCallbackRequest 任务回调请求
      */
-    void run(Date date, Map<String, String> args, final PiscesJobData jobData);
+    void run(final JobCallRequest jobCallRequest, final JobCallbackRequest jobCallbackRequest);
 }
