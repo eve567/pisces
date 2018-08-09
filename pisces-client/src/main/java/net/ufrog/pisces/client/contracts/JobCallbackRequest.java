@@ -3,6 +3,7 @@ package net.ufrog.pisces.client.contracts;
 import lombok.Getter;
 import lombok.Setter;
 import net.ufrog.aries.common.contract.Request;
+import net.ufrog.common.dict.Dicts;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,6 +67,15 @@ public class JobCallbackRequest extends Request {
      */
     public void putArg(String key, Object value) {
         this.args.put(key, value);
+    }
+
+    /**
+     * 读取状态名称
+     *
+     * @return 状态名称
+     */
+    public String getStatusName() {
+        return Dicts.name(status, Status.class);
     }
 
     /**
