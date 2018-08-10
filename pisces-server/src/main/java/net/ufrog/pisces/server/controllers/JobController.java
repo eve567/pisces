@@ -1,15 +1,13 @@
 package net.ufrog.pisces.server.controllers;
 
+import com.alibaba.fastjson.JSON;
 import net.ufrog.aries.common.contract.ListResponse;
 import net.ufrog.aries.common.contract.Response;
 import net.ufrog.common.Logger;
 import net.ufrog.common.Mailer;
 import net.ufrog.common.app.App;
 import net.ufrog.common.jetbrick.Templates;
-import net.ufrog.common.utils.Calendars;
-import net.ufrog.common.utils.Codecs;
-import net.ufrog.common.utils.Files;
-import net.ufrog.common.utils.Strings;
+import net.ufrog.common.utils.*;
 import net.ufrog.pisces.client.JobClient;
 import net.ufrog.pisces.client.ResultCode;
 import net.ufrog.pisces.client.contracts.JobCallbackRequest;
@@ -27,6 +25,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.HtmlUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -169,7 +170,11 @@ public class JobController implements JobClient {
      */
     private String getLayout() {
         if (Strings.empty(layout)) {
-            layout = Files.readFile("/templates/email/layout.html");
+            try (InputStream inputStream = Files.getInputStream("/templates/email/layout.html")) {
+                layout = new String(Streams.toByteArray(inputStream), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new ServiceException(e.getMessage(), e);
+            }
         }
         return layout;
     }
