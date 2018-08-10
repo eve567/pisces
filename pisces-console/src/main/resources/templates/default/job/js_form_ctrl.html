@@ -6,6 +6,7 @@
             init: function() {
                 $scope.find();
                 $scope.reset();
+                $scope.typeDescPopover();
             },
 
             // 查询
@@ -57,6 +58,22 @@
                 $scope.current.jobCtrl = jobCtrl;
                 $scope.ctrl.status('deleteBtn', 'standby');
                 $bootstrap.modal.show('deleteCtrlConfirmModal');
+            },
+
+            //
+            typeDescPopover: function() {
+                $scope.$('#typeDesc').popover({
+                    html: true,
+                    placement: 'right',
+                    trigger: 'hover',
+                    content: [
+                        '<ul style="margin: 0; padding: 0; list-style: none;">',
+                            '<li><strong><i>调启</i></strong>&nbsp;-&nbsp;任务执行结束之后自动启动，启动的任务同时受限于其他控制规则</li>',
+                            '<li><strong><i>阻塞</i></strong>&nbsp;-&nbsp;相关任务执行时，该任务不启动</li>',
+                            '<li><strong><i>挂起</i></strong>&nbsp;-&nbsp;相关任务执行时，等待相关任务执行结束，由相关任务调启</li>',
+                        '</ul>'
+                    ].join('')
+                });
             }
         }).init();
     }
